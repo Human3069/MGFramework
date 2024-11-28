@@ -63,7 +63,7 @@ namespace _MG_Framework
         {
             if (collider.TryGetComponent<PlayerInventory>(out PlayerInventory inventory) == true)
             {
-                inventory.Gained(type);
+                inventory.Push(type);
 
                 DisableAsync().Forget();
             }

@@ -5,8 +5,18 @@ using UnityEngine;
 
 namespace _MG_Framework
 {
-    public abstract class EnterableIngredient : BaseEnterable
+    public class EnterableIngredient : BaseEnterable, IDamageable
     {
+        public DamageableType _Type
+        {
+            get
+            {
+                return DamageableType.Tree;
+            }
+        }
+
+        public event IDamageable.Damaged OnDamagedCallback;
+
         protected Collider[] colliders;
 
         [SerializeField]
@@ -23,7 +33,8 @@ namespace _MG_Framework
         [Space(10)]
         [SerializeField]
         protected Vector2Int instantiateOnDeadRange = new Vector2Int(2, 5);
-        public float instantiateRandomSphereRadius = 1f;
+        [SerializeField]
+        protected float instantiateRandomSphereRadius = 1f;
 
         [Space(10)]
         [SerializeField]
@@ -52,6 +63,8 @@ namespace _MG_Framework
                         {
                             OnDamaged();
                         }
+
+                        OnDamagedCallback?.Invoke(_currentHealth / maxHealth);
                     }
                     else
                     {

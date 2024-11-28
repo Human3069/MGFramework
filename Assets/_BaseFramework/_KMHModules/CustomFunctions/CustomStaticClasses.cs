@@ -141,9 +141,7 @@ namespace _KMH_Framework
         {
             float difference = Quaternion.Angle(origin, comparer);
             float absLimit = Mathf.Abs(limit);
-
-            Debug.Log("diff : " + difference + ", limit : " + absLimit + ", result : " + (absLimit > difference));
-
+            
             return absLimit > difference;
         }
     }

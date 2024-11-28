@@ -8,7 +8,10 @@ namespace _MG_Framework
     public enum PoolerType
     {
         Item_Tree,
-        Stackable_Tree
+        Item_Meat,
+
+        Stackable_Tree,
+        Stackable_Meat,
     }
 
     public class ObjectPoolManager : MonoBehaviour

@@ -8,7 +8,43 @@ namespace _MG_Framework
 {
     public enum ItemType
     {
-        Tree
+        Tree,
+        Meat
+    }
+
+    public static class MGHelper
+    {
+        public static PoolerType ToPoolerItemType(this ItemType type)
+        {
+            if (type == ItemType.Tree)
+            {
+                return PoolerType.Item_Tree;
+            }
+            else if (type == ItemType.Meat)
+            {
+                return PoolerType.Item_Meat;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public static PoolerType ToPoolerStackableType(this ItemType type)
+        {
+            if (type == ItemType.Tree)
+            {
+                return PoolerType.Stackable_Tree;
+            }
+            else if (type == ItemType.Meat)
+            {
+                return PoolerType.Stackable_Meat;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 
     public class PlayerInventory : MonoBehaviour
@@ -34,15 +70,46 @@ namespace _MG_Framework
             }
         }
 
-        public virtual void Gained(ItemType type)
+        public virtual void Push(ItemType type)
         {
-            int currentCount = itemDic[type];
+            int currentCount = 0;
+            foreach (var pair in itemDic)
+            {
+                currentCount += pair.Value;
+            }
+
             itemDic[type]++;
 
-            GameObject instance = ObjectPoolManager.Instance.TakeOutObj(PoolerType.Stackable_Tree);
+            GameObject instance = ObjectPoolManager.Instance.TakeOutObj(type.ToPoolerStackableType());
             instance.transform.parent = stackBagT;
             instance.transform.localPosition = new Vector3(0f, currentCount * stackDistance, 0f);
             instance.transform.forward = stackBagT.forward;
+        }
+
+        public virtual bool TryPop(ItemType type, out GameObject obj)
+        {
+            if (itemDic[type] > 0)
+            {
+                for (int i = stackBagT.childCount - 1; i >= 0; i--)
+                {
+                    GameObject targetObj = stackBagT.GetChild(i).gameObject;
+                    if (targetObj.name.Contains("_Popping") == false)
+                    {
+                        itemDic[type]--;
+
+                        obj = targetObj;
+                        return true;
+                    }
+                }
+
+                obj = null;
+                return false;
+            }
+            else
+            {
+                obj = null;
+                return false;
+            }
         }
     }
 }

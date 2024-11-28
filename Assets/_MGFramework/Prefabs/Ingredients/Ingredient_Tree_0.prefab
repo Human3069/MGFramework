@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5743726630397192860}
   - component: {fileID: 7358722350737951170}
+  - component: {fileID: 3676143307381290427}
   m_Layer: 0
   m_Name: Tree_Alive
   m_TagString: Untagged
@@ -81,6 +82,69 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &3676143307381290427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4804646568374834244}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  complexMaskingMode: 0
+  drawingMode: 1
+  outlineLayer: 0
+  outlineTargets:
+  - IsVisible: 0
+    CutoutMask: 8
+    edgeDilateAmount: 5
+    frontEdgeDilateAmount: 5
+    backEdgeDilateAmount: 5
+    renderer: {fileID: 1491327899653335096}
+    SubmeshIndex: 0
+    BoundsMode: 0
+    Bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    CutoutThreshold: 0.5
+    CullMode: 2
+    cutoutTextureName: 
+    DilateRenderingMode: 0
+    cutoutTextureIndex: 0
+  renderStyle: 1
+  outlineParameters:
+    enabled: 1
+    color: {r: 1, g: 0, b: 0, a: 1}
+    dilateShift: 0
+    blurShift: 0
+    fillPass:
+      shader: {fileID: 4800000, guid: 213090e563021044c92d1c27258b93f0, type: 3}
+      serializedProperties:
+      - PropertyName: _PublicColor
+        Property:
+          ColorValue: {r: 1, g: 0, b: 0, a: 0.2}
+          FloatValue: 0
+          VectorValue: {x: 0, y: 0, z: 0, w: 0}
+          PropertyType: 0
+  backParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  frontParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
 --- !u!1 &5659965714238998955
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,17 +190,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 5659965714238998955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bc40e6bd5c17804faba45b844e6f465, type: 3}
+  m_Script: {fileID: 11500000, guid: f2107b18657949f4088e61b861d87d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _animation: {fileID: 7358722350737951170}
   itemInstantiatePoint: {fileID: 5985515680681193104}
   aliveObj: {fileID: 4804646568374834244}
   deadObj: {fileID: 9043519687389923581}
-  instantiateOnDeadRange: {x: 3, y: 5}
-  LookAtSpeed: 100
-  instantiateRandomSphereRadius: 1.5
-  maxHealth: 30
+  instantiateOnDeadRange: {x: 2, y: 5}
+  instantiateRandomSphereRadius: 1
+  maxHealth: 50
   _currentHealth: 0
 --- !u!135 &5887332593520641369
 SphereCollider:
@@ -258,11 +321,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1804244151549930758, guid: a9e8ec9d2ae5a9e46a3c2f168aef0d21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1299365434830172735}
   m_SourcePrefab: {fileID: 100100000, guid: a9e8ec9d2ae5a9e46a3c2f168aef0d21, type: 3}
 --- !u!4 &358438653546500951 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1315656731099264956, guid: a9e8ec9d2ae5a9e46a3c2f168aef0d21, type: 3}
+  m_PrefabInstance: {fileID: 1637983007496037611}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1131176063458134509 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1804244151549930758, guid: a9e8ec9d2ae5a9e46a3c2f168aef0d21, type: 3}
+  m_PrefabInstance: {fileID: 1637983007496037611}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1299365434830172735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131176063458134509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!23 &1491327899653335096 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 146659523138555091, guid: a9e8ec9d2ae5a9e46a3c2f168aef0d21, type: 3}
   m_PrefabInstance: {fileID: 1637983007496037611}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8244813349716235176

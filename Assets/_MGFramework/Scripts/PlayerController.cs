@@ -8,8 +8,18 @@ using UnityEngine.AI;
 namespace _MG_Framework
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : BaseEnterable, IDamageable
     {
+        public DamageableType _Type
+        {
+            get
+            {
+                return DamageableType.Player;
+            }
+        }
+
+        public event IDamageable.Damaged OnDamagedCallback;
+
         protected NavMeshAgent agent;
         protected KeyframeEventHandler keyframeHandler;
 
@@ -23,9 +33,50 @@ namespace _MG_Framework
         [SerializeField]
         protected float lookAtSpeed;
         [SerializeField]
-        protected float chopDamage;
+        protected float handleDamage = 10;
 
-        protected EnterableIngredient enteredIngredient = null;
+        [Space(10)]
+        [SerializeField]
+        protected float maxHealth = 100f;
+        [ReadOnly]
+        [SerializeField]
+        protected float _currentHealth;
+        public float CurrentHealth
+        {
+            get
+            {
+                return _currentHealth;
+            }
+            set
+            {
+                if (isAlive == true)
+                {
+                    if (_currentHealth > value)
+                    {
+                        _currentHealth = Mathf.Clamp(value, 0f, maxHealth);
+                        if (_currentHealth == 0f)
+                        {
+                            OnDeadAsync().Forget();
+                        }
+                        else
+                        {
+                            OnDamaged();
+                        }
+
+                        OnDamagedCallback?.Invoke(_currentHealth / maxHealth);
+                    }
+                    else
+                    {
+                        _currentHealth = value;
+                    }
+                }
+                _currentHealth = value;
+            }
+        }
+
+        protected bool isAlive = true;
+
+        protected IDamageable enteredDamageable = null;
 
         public delegate void Stopped(bool isStopped);
         public event Stopped OnStopped;
@@ -47,7 +98,7 @@ namespace _MG_Framework
 
                     if (value == true)
                     {
-                        if (enteredIngredient != null)
+                        if (enteredDamageable != null)
                         {
                             RotateAndMiningIfStoppedAsync().Forget();
                         }
@@ -87,9 +138,25 @@ namespace _MG_Framework
             mouseHandler.OnMouseDown -= OnMouseDown;
         }
 
+        protected virtual void Start()
+        {
+            isAlive = true;
+            CurrentHealth = maxHealth;
+        }
+
         protected virtual void Update()
         {
             HandleMovingAnimation();
+        }
+
+        protected virtual void OnDamaged()
+        {
+            animator.SetTrigger("damaged");
+        }
+
+        protected virtual async UniTaskVoid OnDeadAsync()
+        {
+            isAlive = false;
         }
 
         protected virtual void HandleMovingAnimation()
@@ -115,20 +182,20 @@ namespace _MG_Framework
 
         protected virtual void OnKeyframeReached()
         {
-            if (enteredIngredient != null)
+            if (enteredDamageable != null)
             {
-                enteredIngredient.CurrentHealth -= chopDamage;
+                enteredDamageable.CurrentHealth -= handleDamage;
             }
         }
 
-        public virtual void OnEnter(EnterableIngredient ingredient)
+        public virtual void OnEnter(IDamageable damageable)
         {
-            enteredIngredient = ingredient;
+            enteredDamageable = damageable;
         }
 
         public virtual async UniTaskVoid OnExitAsync()
         {
-            enteredIngredient = null;
+            enteredDamageable = null;
             this.animator.SetTrigger("Trigger_StopMining");
 
             await UniTask.WaitForSeconds(0.5f);
@@ -141,22 +208,26 @@ namespace _MG_Framework
             Collider[] overlappedColliders = Physics.OverlapSphere(this.transform.position, 0.1f);
             foreach (Collider collider in overlappedColliders)
             {
-                if (collider.gameObject.TryGetComponent<EnterableIngredient>(out EnterableIngredient ingredient) == true)
+                if (collider.gameObject.TryGetComponent<BaseEnterable>(out BaseEnterable enterable) == true)
                 {
-                    OnEnter(ingredient);
-                    RotateAndMiningIfStoppedAsync().Forget();
+                    if (enterable != this &&
+                        enterable is IDamageable)
+                    {
+                        OnEnter(enterable as IDamageable);
+                        RotateAndMiningIfStoppedAsync().Forget();
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
 
         protected virtual async UniTask RotateAndMiningIfStoppedAsync()
         {
-            Vector3 targetDir = (enteredIngredient.transform.position - this.transform.position).normalized;
+            Vector3 targetDir = (enteredDamageable.transform.position - this.transform.position).normalized;
             Quaternion targetRot = Quaternion.LookRotation(targetDir, this.transform.up);
 
-            while (enteredIngredient != null &&
+            while (enteredDamageable != null &&
                    this.transform.rotation.Similiar(targetRot, 10f) == false)
             {
                 this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, targetRot, Time.deltaTime * lookAtSpeed);
@@ -164,7 +235,7 @@ namespace _MG_Framework
                 await UniTask.NextFrame();
             }
 
-            while (enteredIngredient != null)
+            while (enteredDamageable != null)
             {
                 if (IsStopped == true)
                 {
@@ -174,6 +245,16 @@ namespace _MG_Framework
 
                 await UniTask.NextFrame();
             }
+        }
+
+        protected override void OnTriggerEnter(Collider collider)
+        {
+           
+        }
+
+        protected override void OnTriggerExit(Collider collider)
+        {
+     
         }
     }
 }
