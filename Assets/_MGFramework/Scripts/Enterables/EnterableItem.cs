@@ -81,7 +81,7 @@ namespace _MG_Framework
 
             await UniTask.WaitForSeconds(duration);
 
-            this.gameObject.ReturnObj(PoolerType.Item_Tree);
+            this.ReturnObj(PoolerType.Item_Tree);
         }
     }
 }

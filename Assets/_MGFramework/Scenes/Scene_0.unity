@@ -1478,19 +1478,19 @@ MonoBehaviour:
     _serializedList:
     - Key: 0
       Value:
-        prefab: {fileID: 8013189394293039625, guid: c2e0e2abccdf88947aca24d8b19a2acc, type: 3}
+        prefab: {fileID: 5853250690164510649, guid: c2e0e2abccdf88947aca24d8b19a2acc, type: 3}
         instantiateCount: 50
     - Key: 1
       Value:
-        prefab: {fileID: 8013189394293039625, guid: 34cc3c7bce222e043b955049eb6e2263, type: 3}
+        prefab: {fileID: 5853250690164510649, guid: 34cc3c7bce222e043b955049eb6e2263, type: 3}
         instantiateCount: 50
     - Key: 2
       Value:
-        prefab: {fileID: 7860362323306305676, guid: 15d6ca66837e059499ef7c243c08437c, type: 3}
+        prefab: {fileID: 3311159942247996190, guid: 15d6ca66837e059499ef7c243c08437c, type: 3}
         instantiateCount: 50
     - Key: 3
       Value:
-        prefab: {fileID: 7860362323306305676, guid: 03b32cd5776ae08428bf33b248975497, type: 3}
+        prefab: {fileID: 3431941650658163903, guid: 03b32cd5776ae08428bf33b248975497, type: 3}
         instantiateCount: 50
 --- !u!1 &1169357438 stripped
 GameObject:
@@ -2037,6 +2037,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a553a1134e74754d853b18a2344c011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsPopping: 0
   itemType: 0
   placePerSecond: 0.1
   distancePerRow: 0.4
@@ -3153,6 +3154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dd351ed7770f9428b034c368516df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsPopping: 0
   mouseHandler: {fileID: 1479363001}
   animator: {fileID: 2078373993}
   lookAtSpeed: 500
@@ -3294,6 +3296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70092d0f5c931845ba6fb4bf85c72a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsPopping: 0
   animator: {fileID: 1804613611}
   eventHandler: {fileID: 1804613614}
   _bearState: 0

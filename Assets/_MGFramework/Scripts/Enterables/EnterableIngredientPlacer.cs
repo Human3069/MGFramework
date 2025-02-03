@@ -32,7 +32,7 @@ namespace _MG_Framework
 
         protected override void OnTriggerEnter(Collider collider)
         {
-            if (collider.TryGetComponent<PlayerInventory>(out PlayerInventory inventory) == true)
+            if (collider.TryGetComponent(out PlayerInventory inventory) == true)
             {
                 currentInventory = inventory;
                 PostOnTriggerEnter().Forget();

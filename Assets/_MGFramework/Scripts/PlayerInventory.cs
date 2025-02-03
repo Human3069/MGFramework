@@ -80,7 +80,7 @@ namespace _MG_Framework
 
             itemDic[type]++;
 
-            GameObject instance = ObjectPoolManager.Instance.TakeOutObj(type.ToPoolerStackableType());
+            GameObject instance = ObjectPoolManager.Instance.TakeOutObj(type.ToPoolerStackableType()).gameObject;
             instance.transform.parent = stackBagT;
             instance.transform.localPosition = new Vector3(0f, currentCount * stackDistance, 0f);
             instance.transform.forward = stackBagT.forward;

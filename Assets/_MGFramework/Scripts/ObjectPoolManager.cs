@@ -67,7 +67,7 @@ namespace _MG_Framework
             Instance = null;
         }
 
-        public virtual GameObject TakeOutObj(PoolerType type)
+        public virtual Poolable TakeOutObj(PoolerType type)
         {
             if (poolerDic.ContainsKey(type) == false)
             {
@@ -80,7 +80,7 @@ namespace _MG_Framework
             }
         }
 
-        public virtual GameObject TakeOutObj(PoolerType type, Vector3 position, Quaternion rotation)
+        public virtual Poolable TakeOutObj(PoolerType type, Vector3 position, Quaternion rotation)
         {
             if (poolerDic.ContainsKey(type) == false)
             {
@@ -93,15 +93,15 @@ namespace _MG_Framework
             }
         }
 
-        public virtual void ReturnObj(GameObject obj, PoolerType type)
+        public virtual void ReturnObj(Poolable poolable, PoolerType type)
         {
-            if (obj == null || poolerDic.ContainsKey(type) == false)
+            if (poolable == null || poolerDic.ContainsKey(type) == false)
             {
                 Debug.LogErrorFormat(LOG_FORMAT, "cannot return object!");
                 return;
             }
 
-            poolerDic[type].ReturnObj(obj);
+            poolerDic[type].ReturnObj(poolable);
         }
     }
 
@@ -109,15 +109,15 @@ namespace _MG_Framework
     {
         private const string LOG_FORMAT = "<color=white><b>[ObjectPoolHelper]</b></color> {0}";
 
-        public static void ReturnObj(this GameObject obj, PoolerType type)
+        public static void ReturnObj(this Poolable poolable, PoolerType type)
         {
-            if (obj == null || ObjectPoolManager.Instance == null || ObjectPoolManager.Instance.poolerDic.ContainsKey(type) == false)
+            if (poolable == null || ObjectPoolManager.Instance == null || ObjectPoolManager.Instance.poolerDic.ContainsKey(type) == false)
             {
                 Debug.LogErrorFormat(LOG_FORMAT, "cannot return object!");
                 return;
             }
 
-            ObjectPoolManager.Instance.poolerDic[type].ReturnObj(obj);
+            ObjectPoolManager.Instance.poolerDic[type].ReturnObj(poolable);
         }
     }
 }
@@ -127,10 +127,10 @@ namespace _MG_Framework.Internal
     [System.Serializable]
     public class ObjectPooler
     {
-        private Queue<GameObject> poolQueue;
+        private Queue<Poolable> poolQueue;
 
         [SerializeField]
-        private GameObject prefab;
+        private Poolable prefab;
         [SerializeField]
         private int instantiateCount;
 
@@ -147,50 +147,50 @@ namespace _MG_Framework.Internal
             disabledObj.transform.SetParent(poolerT);
             disabledT = disabledObj.transform;
 
-            poolQueue = new Queue<GameObject>();
+            poolQueue = new Queue<Poolable>();
             for (int i = 0; i < instantiateCount; i++)
             {
-                GameObject obj = Object.Instantiate(prefab);
-                obj.SetActive(false);
-                obj.transform.SetParent(disabledT);
+                Poolable poolable = Object.Instantiate(prefab);
+                poolable.gameObject.SetActive(false);
+                poolable.transform.SetParent(disabledT);
 
-                poolQueue.Enqueue(obj);
+                poolQueue.Enqueue(poolable);
             }
         }
 
-        internal GameObject TakeOutObj()
+        internal Poolable TakeOutObj()
         {
-            if (poolQueue.TryDequeue(out GameObject obj) == false)
+            if (poolQueue.TryDequeue(out Poolable poolable) == false)
             {
-                obj = Object.Instantiate(prefab);
+                poolable = Object.Instantiate(prefab);
             }
 
-            obj.transform.SetParent(enabledT);
-            obj.SetActive(true);
+            poolable.transform.SetParent(enabledT);
+            poolable.gameObject.SetActive(true);
 
-            return obj;
+            return poolable;
         }
 
-        internal GameObject TakeOutObj(Vector3 position, Quaternion rotation)
+        internal Poolable TakeOutObj(Vector3 position, Quaternion rotation)
         {
-            if (poolQueue.TryDequeue(out GameObject obj) == false)
+            if (poolQueue.TryDequeue(out Poolable poolable) == false)
             {
-                obj = Object.Instantiate(obj);
+                poolable = Object.Instantiate(poolable);
             }
 
-            obj.transform.SetParent(enabledT);
-            obj.transform.SetPositionAndRotation(position, rotation);
-            obj.SetActive(true);
+            poolable.transform.SetParent(enabledT);
+            poolable.transform.SetPositionAndRotation(position, rotation);
+            poolable.gameObject.SetActive(true);
 
-            return obj;
+            return poolable;
         }
 
-        internal void ReturnObj(GameObject obj)
+        internal void ReturnObj(Poolable poolable)
         {
-            obj.SetActive(false);
-            obj.transform.SetParent(disabledT);
+            poolable.gameObject.SetActive(false);
+            poolable.transform.SetParent(disabledT);
 
-            poolQueue.Enqueue(obj);
+            poolQueue.Enqueue(poolable);
         }
     }
 }

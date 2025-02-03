@@ -5,7 +5,7 @@ using UnityEngine;
 namespace _MG_Framework
 {
     [RequireComponent(typeof(Collider))]
-    public abstract class BaseEnterable : MonoBehaviour
+    public abstract class BaseEnterable : Poolable
     {
         protected abstract void OnTriggerEnter(Collider collider);
 

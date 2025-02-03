@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3192030384675769347}
+  - component: {fileID: 3431941650658163903}
   - component: {fileID: 7882616707260009202}
   m_Layer: 0
   m_Name: Stackable_Meat
@@ -33,6 +34,18 @@ Transform:
   - {fileID: 2756823686426989549}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3431941650658163903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7860362323306305676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce753595a4dc55c4383236b15de3999c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!111 &7882616707260009202
 Animation:
   m_ObjectHideFlags: 0
