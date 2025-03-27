@@ -64,13 +64,21 @@ namespace MGFramework
         [Header("=== HealthbarSetting ===")]
         public float OffsetHeight = 0f;
 
+        protected virtual void Awake()
+        {
+            CurrentHealth = maxHealth;
+        }
+
         public virtual void Alive()
         {
             CurrentHealth = maxHealth;
             IsDead = false;
 
             alivedObj.SetActive(true);
-            deadObj.SetActive(false);
+            if (deadObj != null)
+            {
+                deadObj.SetActive(false);
+            }
 
             _animation.PlayQueued("OnAlived");
             OnAlivedEvent?.Invoke();
@@ -90,7 +98,10 @@ namespace MGFramework
 
         protected virtual async UniTaskVoid OnDeadAsync()
         {
-            deadObj.SetActive(true);
+            if (deadObj != null)
+            {
+                deadObj.SetActive(true);
+            }
 
             AnimationState state = _animation.PlayQueued("OnDead");
             await UniTask.WaitForSeconds(state.length);

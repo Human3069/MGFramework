@@ -21,8 +21,9 @@ namespace MGFramework
 
         private Collider[] colliders;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             colliders = this.GetComponents<Collider>();
         }
 
