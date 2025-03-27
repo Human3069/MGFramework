@@ -1,66 +1,78 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using static MGFramework.UI_Main;
 
-namespace _MG_Framework
+namespace MGFramework
 {
     public class UI_Healthbar : MonoBehaviour
     {
-        protected Camera _camera;
-        protected IDamageable targetDamageable;
-        protected RectTransform rectT;
+        private HealthbarInfo _info;
 
         [SerializeField]
-        protected Image currentHealthImage;
+        private CanvasGroup group;
         [SerializeField]
-        protected Image redMarkImage;
-
-        [Space(10)]
+        private Image progressedImage;
         [SerializeField]
-        protected float redMarkDelta = 10f;
+        private Image damagedImage;
 
-        protected float _additionalHeight;
-
-        public virtual void Initialize(Camera targetCamera, IDamageable damageable, float additionalHeight)
+        public void Initialize(HealthbarInfo info)
         {
-            _camera = targetCamera;
-            targetDamageable = damageable;
-            rectT = this.transform as RectTransform;
-
-            _additionalHeight = additionalHeight;
-
-            targetDamageable.OnDamagedCallback += OnDamaged;
+            this._info = info;
+            this._info._Damageable.OnAlivedEvent += OnAlived;
+            this._info._Damageable.OnDamagedEvent += OnDamaged;
+            this._info._Damageable.OnDeadEvent += OnDead;
         }
 
-        protected virtual void OnDamaged(float normalized)
+        private void FixedUpdate()
         {
-            currentHealthImage.fillAmount = normalized;
+            Vector3 screenPos = _info._Camera.WorldToScreenPoint(_info._Damageable.transform.position);
+            this.transform.position = screenPos + Vector3.up * _info._Damageable.OffsetHeight;
 
-            UniTaskEx.Cancel(this, 0);
-            OnDamagedAsync(normalized).Forget();
+            float currentAmount = damagedImage.fillAmount;
+            float targetAmount = progressedImage.fillAmount;
+            float fillSpeed = _info._DamagedFillSpeed;
+            damagedImage.fillAmount = Mathf.Lerp(currentAmount, targetAmount, fillSpeed);
         }
 
-        protected virtual async UniTask OnDamagedAsync(float normalized)
+        private void OnAlived()
         {
-            while (redMarkImage.fillAmount != currentHealthImage.fillAmount)
+            progressedImage.fillAmount = 1f;
+            damagedImage.fillAmount = 1f;
+
+            this.gameObject.SetActive(true);
+
+            FadeAsync(0f, 1f).Forget();
+        }
+
+        private void OnDamaged(float maxHealth, float currentHealth)
+        {
+            float normal = currentHealth / maxHealth;
+            progressedImage.fillAmount = normal;
+        }
+
+        private void OnDead()
+        {
+            progressedImage.fillAmount = 0f;
+            FadeAsync(1f, 0f, () => this.gameObject.SetActive(false)).Forget();
+        }
+
+        private async UniTaskVoid FadeAsync(float fromValue, float toValue, Action afterFadeAction = null)
+        {
+            float timer = 0f;
+            while (timer < _info._FadeDuration)
             {
-                redMarkImage.fillAmount = Mathf.MoveTowards(redMarkImage.fillAmount, currentHealthImage.fillAmount, redMarkDelta * Time.deltaTime);
+                float normal = timer / _info._FadeDuration;
+                float normalized = Mathf.Lerp(fromValue, toValue, normal);
+                group.alpha = normalized;
 
-                await UniTaskEx.NextFrame(this, 0);
+                timer += Time.deltaTime;
+                await UniTask.Yield();
             }
 
-            if (redMarkImage.fillAmount == 0f)
-            {
-                this.gameObject.SetActive(false);
-            }
-        }
-
-        protected virtual void Update()
-        {
-            Vector3 screenPoint = _camera.WorldToScreenPoint(targetDamageable.transform.position) + new Vector3(0f, _additionalHeight, 0f);
-            this.transform.position = screenPoint;
+            group.alpha = toValue;
+            afterFadeAction?.Invoke();
         }
     }
 }

@@ -1,56 +1,53 @@
-using AYellowpaper.SerializedCollections;
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-namespace _MG_Framework
+namespace MGFramework
 {
-    public enum DamageableType
-    {
-        Player,
-        Tree,
-        Bear
-    }
-
     public class UI_Main : MonoBehaviour
     {
         [SerializeField]
-        protected Camera targetCamera;
+        private Camera _camera;
+        [SerializeField]
+        private UI_Healthbar healthbarPrefab;
+        [SerializeField]
+        private Transform parentT;
 
         [Space(10)]
         [SerializeField]
-        protected RectTransform healthbarPanel;
+        private float fadeDuration;
         [SerializeField]
-        protected UI_Healthbar healthbarPrefab;
+        private float damagedFillSpeed;
 
-        [Space(10)]
-        [SerializeField]
-        [SerializedDictionary("Component", "Healthbar Height")]
-        protected SerializedDictionary<DamageableType, float> healthbarHeightDic = new SerializedDictionary<DamageableType, float>();
-
-        protected virtual void Start()
+        private void Start()
         {
-            Scene currentScene = SceneManager.GetActiveScene();
-            BaseEnterable[] foundEnterables = Resources.FindObjectsOfTypeAll<BaseEnterable>();
-
-            int index = 0;
-            foreach (BaseEnterable enterable in foundEnterables)
+            BaseDamageable[] damageables = FindObjectsByType<BaseDamageable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (BaseDamageable damageable in damageables)
             {
-                if (enterable is IDamageable &&
-                    enterable.gameObject.scene == currentScene)
+                if (damageable.IsDead == false &&
+                    damageable.gameObject.activeInHierarchy == true)
                 {
-                    IDamageable damageable = enterable as IDamageable;
-                    DamageableType type = damageable._Type;
+                    HealthbarInfo info = new HealthbarInfo(_camera, damageable, fadeDuration, damagedFillSpeed);
 
-                    float additionalHeight = healthbarHeightDic[type];
-
-                    UI_Healthbar healthbarInstance = Instantiate(healthbarPrefab);
-                    healthbarInstance.transform.SetParent(healthbarPanel);
-                    healthbarInstance.Initialize(targetCamera, damageable, additionalHeight);
-                    healthbarInstance.gameObject.name = "UI_Healthbar_" + index;
-
-                    index++;
+                    UI_Healthbar uiInstance = Instantiate(healthbarPrefab, parentT);
+                    uiInstance.Initialize(info);
                 }
+            }
+        }
+
+        public struct HealthbarInfo
+        {
+            public Camera _Camera;
+            public BaseDamageable _Damageable;
+            public float _FadeDuration;
+            public float _DamagedFillSpeed;
+
+            public HealthbarInfo(Camera camera, BaseDamageable damageable, float fadeDuration, float damagedFillSpeed)
+            {
+                this._Camera = camera;
+                this._Damageable = damageable;
+                this._FadeDuration = fadeDuration;
+                this._DamagedFillSpeed = damagedFillSpeed;
             }
         }
     }
