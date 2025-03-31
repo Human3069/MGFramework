@@ -10,8 +10,8 @@ namespace MGFramework
         private Transform _playerT;
         private PlayerAnimationController _anime;
 
-        private BaseDamageable _handlingDamageable = null;
-        private BaseDamageable HandlingDamageable
+        private Damageable _handlingDamageable = null;
+        private Damageable HandlingDamageable
         {
             get
             {
@@ -111,7 +111,8 @@ namespace MGFramework
 
             foreach (Collider overlappedCollider in overlappedColliders)
             {
-                if (overlappedCollider.TryGetComponent(out BaseDamageable damageable) == true &&
+                if (overlappedCollider.transform != this._playerT &&
+                    overlappedCollider.TryGetComponent(out Damageable damageable) == true &&
                     damageable.IsDead == false)
                 {
                     gotDamageable = true;

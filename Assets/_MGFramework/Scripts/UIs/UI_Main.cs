@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MGFramework
@@ -11,6 +12,8 @@ namespace MGFramework
         [SerializeField]
         private UI_Healthbar healthbarPrefab;
         [SerializeField]
+        private UI_Manabar manabarPrefab;
+        [SerializeField]
         private Transform parentT;
 
         [Space(10)]
@@ -21,8 +24,8 @@ namespace MGFramework
 
         private void Start()
         {
-            BaseDamageable[] damageables = FindObjectsByType<BaseDamageable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (BaseDamageable damageable in damageables)
+            Damageable[] damageables = FindObjectsOfType<Damageable>();
+            foreach (Damageable damageable in damageables)
             {
                 if (damageable.IsDead == false &&
                     damageable.gameObject.activeInHierarchy == true)
@@ -33,19 +36,47 @@ namespace MGFramework
                     uiInstance.Initialize(info);
                 }
             }
+
+            IProgressable[] progressables = FindObjectsOfType<MonoBehaviour>().OfType<IProgressable>().ToArray();
+            foreach (IProgressable progressable in progressables)
+            {
+                if (progressable.gameObject.activeInHierarchy == true)
+                {
+                    ManabarInfo info = new ManabarInfo(_camera, progressable, fadeDuration, damagedFillSpeed);
+
+                    UI_Manabar uiInstance = Instantiate(manabarPrefab, parentT);
+                    uiInstance.Initialize(info);
+                }
+            }
         }
 
         public struct HealthbarInfo
         {
             public Camera _Camera;
-            public BaseDamageable _Damageable;
+            public Damageable _Damageable;
             public float _FadeDuration;
             public float _DamagedFillSpeed;
 
-            public HealthbarInfo(Camera camera, BaseDamageable damageable, float fadeDuration, float damagedFillSpeed)
+            public HealthbarInfo(Camera camera, Damageable damageable, float fadeDuration, float damagedFillSpeed)
             {
                 this._Camera = camera;
                 this._Damageable = damageable;
+                this._FadeDuration = fadeDuration;
+                this._DamagedFillSpeed = damagedFillSpeed;
+            }
+        }
+
+        public struct ManabarInfo
+        {
+            public Camera _Camera;
+            public IProgressable _Progressable;
+            public float _FadeDuration;
+            public float _DamagedFillSpeed;
+
+            public ManabarInfo(Camera camera, IProgressable progressable, float fadeDuration, float damagedFillSpeed)
+            {
+                this._Camera = camera;
+                this._Progressable = progressable;
                 this._FadeDuration = fadeDuration;
                 this._DamagedFillSpeed = damagedFillSpeed;
             }

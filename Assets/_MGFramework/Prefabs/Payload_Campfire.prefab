@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1030289799197722512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2652952993316659260}
+  m_Layer: 0
+  m_Name: Transform_Input_RawMeatStore
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2652952993316659260
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030289799197722512}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.3, y: 0.4, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 992753594396310118}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2261888191176657882
 GameObject:
   m_ObjectHideFlags: 0
@@ -34,6 +65,8 @@ Transform:
   m_Children:
   - {fileID: 2613411211869063922}
   - {fileID: 3168918208156454430}
+  - {fileID: 2652952993316659260}
+  - {fileID: 4726621335369297408}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4219213693047516759
@@ -51,14 +84,27 @@ MonoBehaviour:
   inputDic:
     _serializedList:
     - Key: 0
-      Value: 0
+      Value:
+        Count: 0
+        StoreT: {fileID: 3168918208156454430}
+    - Key: 1
+      Value:
+        Count: 0
+        StoreT: {fileID: 2652952993316659260}
+  outputDic:
+    _serializedList:
+    - Key: 2
+      Value:
+        Count: 0
+        StoreT: {fileID: 4726621335369297408}
   inputDelay: 0.5
   isSuction: 1
+  _maxProgress: 1
+  _currentProgress: 0
+  _offsetHeight: -15
   flameT: {fileID: 2613411211611214488}
-  storeT: {fileID: 3168918208156454430}
   flameLight: {fileID: 2895282495410866549}
   flameParticle: {fileID: 2613411211611214470}
-  _flameIntensityNormal: 1
   decreasePerSec: 0.01
   increasePerCount: 0.4
   storingHeight: 0.25
@@ -111,6 +157,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7514976248252156554
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4726621335369297408}
+  m_Layer: 0
+  m_Name: Transform_Output_CoockedMeatStore
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4726621335369297408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7514976248252156554}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.68, y: 0.4, z: -0.03}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 992753594396310118}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8619009812515122758
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3168918208156454430}
   m_Layer: 0
-  m_Name: Transform_Store
+  m_Name: Transform_Input_WoodStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,7 +213,7 @@ Transform:
   m_GameObject: {fileID: 8619009812515122758}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4, z: 1.5}
+  m_LocalPosition: {x: 0.3, y: 0.4, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

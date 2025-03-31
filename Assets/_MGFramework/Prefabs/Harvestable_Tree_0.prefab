@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6636998343465118566}
   - component: {fileID: 5082167031274803695}
+  - component: {fileID: 3056834065612582591}
   - component: {fileID: 764810718928338533}
   - component: {fileID: 794792765729933865}
   m_Layer: 0
@@ -48,19 +49,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f82ca25b99ba3a4680ee22579605d50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animation: {fileID: 7155778216167738742}
   alivedObj: {fileID: 6928614721570633943}
   deadObj: {fileID: 1097073093078985249}
-  maxHealth: 100
-  _currentHealth: 100
-  IsDead: 0
-  OffsetHeight: -30
   targetItem: 0
   spawnCountRange: {x: 2, y: 5}
   spawnOffset: {x: 0, y: 3.5, z: 0}
   spawnRadius: 2.75
   spawnLinearForce: 5
   spawnAngularForce: 3
+  regenerationDelay: 40
+--- !u!114 &3056834065612582591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4375506023907205435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fa1e804b97d8ef44b75fe7a32ba7863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animation: {fileID: 7155778216167738742}
+  _isDead: 0
+  maxHealth: 100
+  _currentHealth: 100
+  OffsetHeight: -30
 --- !u!208 &764810718928338533
 NavMeshObstacle:
   m_ObjectHideFlags: 0

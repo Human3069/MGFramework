@@ -1,13 +1,24 @@
+using _KMH_Framework;
 using _KMH_Framework.Pool;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace MGFramework
 {
-    public class Harvestable : BaseDamageable
+    public class Harvestable : MonoBehaviour
     {
+        private Damageable damageable;
+
         [Header("=== Harvestable ===")]
         [SerializeField]
-        private ItemType targetItem;
+        private GameObject alivedObj;
+        [SerializeField]
+        private GameObject deadObj;
+
+        [Space(10)]
+        [SerializeField]
+        private PoolType outputPoolType;
         [SerializeField]
         private Vector2Int spawnCountRange = new Vector2Int(2, 5);
         [SerializeField]
@@ -19,39 +30,60 @@ namespace MGFramework
         [SerializeField]
         private float spawnAngularForce;
 
-        private Collider[] colliders;
+        [Space(10)]
+        [SerializeField]
+        private float regenerationDelay = 20f;
 
-        protected override void Awake()
+        private Collider[] colliders;
+        private NavMeshObstacle obstacle;
+
+        protected virtual void Awake()
         {
-            base.Awake();
+            damageable = this.GetComponent<Damageable>();
+
+            alivedObj.SetActive(true);
+            deadObj.SetActive(false);
+
             colliders = this.GetComponents<Collider>();
+            obstacle = this.GetComponent<NavMeshObstacle>();
+
+            damageable.OnAlivedEvent += OnAlived;
+            damageable.OnDamagedEvent += OnDamaged;
+            damageable.OnDeadEvent += OnDead;
+            damageable.OnAfterDeadEvent += OnAfterDead;
         }
 
-        [ContextMenu("Alive")]
-        public override void Alive()
+        public void OnAlived()
         {
-            base.Alive();
             foreach (Collider collider in colliders)
             {
                 collider.enabled = true;
             }
+            obstacle.enabled = true;
+
+            alivedObj.SetActive(true);
+            deadObj.SetActive(false);
         }
 
-        protected override void OnDead()
+        public void OnDamaged(float maxHealth, float currentHealth)
         {
-            base.OnDead();
+        
+        }
 
+        public void OnDead()
+        {
             foreach (Collider collider in colliders)
             {
                 collider.enabled = false;
             }
+            obstacle.enabled = false;
 
             int spawnCount = Random.Range(spawnCountRange.x, spawnCountRange.y);
             for (int i = 0; i < spawnCount; i++)
             {
                 Vector3 randomizedPos = this.transform.position + spawnOffset + (Random.insideUnitSphere * spawnRadius);
 
-                targetItem.EnablePool(OnBeforePoolTargetItem);
+                outputPoolType.EnablePool(OnBeforePoolTargetItem);
                 void OnBeforePoolTargetItem(GameObject obj)
                 {
                     obj.transform.position = randomizedPos;
@@ -64,6 +96,20 @@ namespace MGFramework
                     rigidbody.angularVelocity = Random.insideUnitSphere * spawnAngularForce;
                 }
             }
+        }
+
+        public void OnAfterDead()
+        {
+            alivedObj.SetActive(false);
+            deadObj.SetActive(true);
+
+            OnAfterDeadAsync().Forget();
+        }
+
+        private async UniTaskVoid OnAfterDeadAsync()
+        {
+            await UniTask.WaitForSeconds(regenerationDelay);
+            damageable.SetAlive();
         }
 
         private void OnDrawGizmosSelected()

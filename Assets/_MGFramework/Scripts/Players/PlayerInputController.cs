@@ -1,3 +1,4 @@
+using _KMH_Framework;
 using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace MGFramework
                 {
                     _agent.destination = hit.point;
 
-                    FxType.PlayerMarker.EnablePool(OnBeforePoolEnabled);
+                    PoolType.PlayerMarker.EnablePool(OnBeforePoolEnabled);
                     void OnBeforePoolEnabled(GameObject obj)
                     {
                         obj.transform.position = hit.point;
@@ -42,7 +43,7 @@ namespace MGFramework
                         async UniTaskVoid OnPoolEnabledAsync(GameObject obj)
                         {
                             await UniTask.WaitForSeconds(0.3f);
-                            obj.ReturnPool(FxType.PlayerMarker);
+                            obj.DisablePool(PoolType.PlayerMarker);
                         }
                     }
                 }

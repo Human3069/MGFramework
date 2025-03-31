@@ -1,3 +1,4 @@
+using _KMH_Framework;
 using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace MGFramework
         private Rigidbody _rigidbody;
         private Collider _collider;
 
-        public ItemType _ItemType;
+        public PoolType _Type;
         [SerializeField]
         private Animation _animation;
 
@@ -87,7 +88,7 @@ namespace MGFramework
 
             IsFading = false;
 
-            this.gameObject.ReturnPool(_ItemType);
+            this.gameObject.DisablePool(_Type);
         }
     }
 }

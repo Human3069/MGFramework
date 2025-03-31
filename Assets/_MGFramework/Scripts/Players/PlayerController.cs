@@ -1,6 +1,4 @@
 using _KMH_Framework;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,6 +6,9 @@ namespace MGFramework
 {
     public class PlayerController : MonoSingleton<PlayerController>
     {
+        private Damageable damageable;
+
+        [Header("=== PlayerController ===")]
         [SerializeField]
         private PlayerInputController input;
         [SerializeField]
@@ -18,6 +19,7 @@ namespace MGFramework
 
         private void Awake()
         {
+            damageable = this.GetComponent<Damageable>();
             NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
 
             input.OnAwake(agent);

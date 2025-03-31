@@ -1,5 +1,5 @@
+using _KMH_Framework;
 using _KMH_Framework.Pool;
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,23 +22,25 @@ namespace MGFramework
 
         public bool TryPush(Item item)
         {
-            ItemType itemType = item._ItemType;
+            PoolType itemPoolType = item._Type;
             if (itemList.Count < maxItemCount)
             {
                 item.DisableAsync().Forget();
-                Item enabledItem = itemType.EnablePool<Item>(OnBeforeEnable);
-                void OnBeforeEnable(Item pooledItem)
+                itemPoolType.EnablePool(OnBeforeEnable);
+                void OnBeforeEnable(GameObject poolObj)
                 {
-                    pooledItem.IsOnInventory = true;
+                    Item poolItem = poolObj.GetComponent<Item>();
+                    poolItem.IsOnInventory = true;
 
                     Vector3 offset = inventoryT.up * heightOffset * itemList.Count;
-                    pooledItem.transform.parent = inventoryT;
-                    pooledItem.transform.localScale = Vector3.one;
-                    pooledItem.transform.position = inventoryT.position + offset;
-                    pooledItem.transform.localEulerAngles = Vector3.zero;
-                }
-                itemList.Add(enabledItem);
+                    poolObj.transform.parent = inventoryT;
+                    poolObj.transform.localScale = Vector3.one;
+                    poolObj.transform.position = inventoryT.position + offset;
+                    poolObj.transform.localEulerAngles = Vector3.zero;
 
+                    itemList.Add(poolItem);
+                }
+              
                 return true;
             }
             else
@@ -47,9 +49,9 @@ namespace MGFramework
             }
         }
 
-        public bool TryPop(ItemType type, Vector3? suctionPoint)
+        public bool TryPop(PoolType type, Vector3? suctionPoint)
         {
-            Item item = itemList.FindLast(x => x._ItemType == type && x.IsOnInventory == true);
+            Item item = itemList.FindLast(x => x._Type == type && x.IsOnInventory == true);
             if (item != null)
             {
                 item.IsOnInventory = false;

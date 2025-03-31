@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8878461749122707771}
   - component: {fileID: 4331103329500054977}
+  - component: {fileID: -7699640497059793324}
   - component: {fileID: 4479704872561489615}
   - component: {fileID: 4485436967267058147}
   m_Layer: 0
@@ -27,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4208145400741124775}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -48,19 +49,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f82ca25b99ba3a4680ee22579605d50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animation: {fileID: 2428952294054826042}
   alivedObj: {fileID: 4415474964002829347}
   deadObj: {fileID: 3142327225006746911}
-  maxHealth: 100
-  _currentHealth: 100
-  IsDead: 0
-  OffsetHeight: -30
   targetItem: 0
   spawnCountRange: {x: 2, y: 5}
   spawnOffset: {x: 0, y: 3.5, z: 0}
   spawnRadius: 2.75
   spawnLinearForce: 5
   spawnAngularForce: 3
+  regenerationDelay: 40
+--- !u!114 &-7699640497059793324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4208145400741124775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fa1e804b97d8ef44b75fe7a32ba7863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animation: {fileID: 2428952294054826042}
+  _isDead: 0
+  maxHealth: 100
+  _currentHealth: 100
+  OffsetHeight: -30
 --- !u!208 &4479704872561489615
 NavMeshObstacle:
   m_ObjectHideFlags: 0
