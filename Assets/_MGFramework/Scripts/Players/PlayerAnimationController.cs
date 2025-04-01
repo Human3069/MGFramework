@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace MGFramework
 {
     [System.Serializable]
     public class PlayerAnimationController
     {
-        private NavMeshAgent _agent;
+        private PlayerData _data;
 
         [SerializeField]
         private Animator animator;
@@ -30,23 +29,23 @@ namespace MGFramework
             }
         }
 
-        public void OnAwake(NavMeshAgent agent)
+        public void OnAwake(PlayerData data)
         {
-            this._agent = agent;
+            this._data = data;
         }
 
-        public void OnUpdate()
+        public void Tick()
         {
             GetMovingState();
         }
 
         private void GetMovingState()
         {
-            Vector3 destination = _agent.destination;
-            Vector3 currentPos = _agent.nextPosition;
+            Vector3 destination = _data._Agent.destination;
+            Vector3 currentPos = _data._Agent.nextPosition;
             float differenceBetween = Vector3.Distance(currentPos, destination);
 
-            IsMoving = (differenceBetween > _agent.stoppingDistance);
+            IsMoving = (differenceBetween > _data._Agent.stoppingDistance);
         }
 
         public void StartMining()
@@ -54,7 +53,7 @@ namespace MGFramework
             animator.SetBool("IsStartMining", true);
             animator.SetTrigger("IsStartMiningStateChanged");
 
-            _agent.destination = _agent.transform.position;
+            _data._Agent.destination = _data._Agent.transform.position;
         }
 
         public void StopMining()

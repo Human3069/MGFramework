@@ -16,6 +16,7 @@ namespace MGFramework
         public void Enter()
         {
             _data._Animator.SetTrigger("IsAlert");
+            _data._Agent.destination = _data._MonsterT.position;
         }
 
         public void Exit()

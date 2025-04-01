@@ -9,17 +9,17 @@ namespace MGFramework
     [System.Serializable]
     public class PlayerInputController
     {
-        private NavMeshAgent _agent;
+        private PlayerData _data;
 
         [SerializeField]
         private Camera mainCamera;
 
-        public void OnAwake(NavMeshAgent agent)
+        public void OnAwake(PlayerData data)
         {
-            this._agent = agent;
+            this._data = data;
         }
 
-        public void OnUpdate()
+        public void Tick()
         {
             MoveToInputDestination();
             SetCameraPosition();
@@ -32,7 +32,7 @@ namespace MGFramework
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue) == true)
                 {
-                    _agent.destination = hit.point;
+                    _data._Agent.destination = hit.point;
 
                     PoolType.PlayerMarker.EnablePool(OnBeforePoolEnabled);
                     void OnBeforePoolEnabled(GameObject obj)
@@ -52,7 +52,7 @@ namespace MGFramework
 
         private void SetCameraPosition()
         {
-            mainCamera.transform.position = _agent.transform.position + mainCamera.transform.forward * -100f;
+            mainCamera.transform.position = _data._PlayerT.position + mainCamera.transform.forward * -100f;
         }
     }
 }

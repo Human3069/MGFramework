@@ -20,9 +20,7 @@ namespace MGFramework
         private bool isShowLog = false;
         [SerializeField]
         private KeyframeReceiver receiver;
-        [SerializeField]
-        private MonsterData monsterData;
-
+      
         [Space(10)]
         [ReadOnly]
         [SerializeField]
@@ -61,6 +59,10 @@ namespace MGFramework
             }
         }
 
+        [Space(10)]
+        [SerializeField]
+        private MonsterData monsterData;
+
         private Damageable damageable;
         private MonsterStateMachine stateMachine;
 
@@ -68,7 +70,7 @@ namespace MGFramework
 
         private void Awake()
         {
-            this.damageable = GetComponent<Damageable>();
+            this.damageable = this.GetComponent<Damageable>();
             this.stateMachine = new MonsterStateMachine();
 
             receiver.OnKeyframeReachedEvent += OnKeyframeReachedEvent;
@@ -115,6 +117,8 @@ namespace MGFramework
             {
                 awaitor = AliveAsync().GetAwaiter();
             }
+
+            monsterData._Agent.enabled = true;
         }
 
         private async UniTask AliveAsync()
@@ -122,6 +126,7 @@ namespace MGFramework
             while (damageable.IsDead == false)
             {
                 stateMachine.SlowTick();
+
                 await UniTask.WaitForSeconds(0.5f);
             }
 
@@ -135,18 +140,41 @@ namespace MGFramework
 
         private void OnDead()
         {
-        
+            monsterData._Agent.enabled = false;
         }
 
         private void OnAfterDead()
         {
-         
+            int randomizedIndex = Random.Range(monsterData._OutputCountRange.x, monsterData._OutputCountRange.y);
+            for (int i = 0; i < randomizedIndex; i++)
+            {
+                monsterData._OutputType.EnablePool(OnBeforeEnablePool);
+                void OnBeforeEnablePool(GameObject poolObj)
+                {
+                    Vector3 randomizedPos = this.transform.position + monsterData._SpawnOffset + (Random.insideUnitSphere * monsterData._SpawnRadius);
+
+                    poolObj.transform.position = randomizedPos;
+                    poolObj.transform.eulerAngles = new Vector3(Random.Range(0f, 360f),
+                                                                Random.Range(0f, 360f),
+                                                                Random.Range(0f, 360f));
+
+                    Rigidbody rigidbody = poolObj.GetComponent<Rigidbody>();
+                    rigidbody.velocity = Random.insideUnitSphere * monsterData._SpawnLinearForce;
+                    rigidbody.angularVelocity = Random.insideUnitSphere * monsterData._SpawnAngularForce;
+                }
+            }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
             stateMachine?.OnIsShowLogValueChange(isShowLog);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(this.transform.position + monsterData._SpawnOffset, monsterData._SpawnRadius);
         }
 #endif
     }

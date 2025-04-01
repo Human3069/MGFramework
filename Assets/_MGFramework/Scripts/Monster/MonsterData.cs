@@ -1,3 +1,4 @@
+using _KMH_Framework.Pool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,5 +28,13 @@ namespace MGFramework
 
         [Space(10)]
         public float _TowardSpeed; // = 4f;
+
+        [Space(10)]
+        public PoolType _OutputType;
+        public Vector2Int _OutputCountRange;
+        public Vector3 _SpawnOffset;
+        public float _SpawnRadius;
+        public float _SpawnLinearForce;
+        public float _SpawnAngularForce;
     }
 }

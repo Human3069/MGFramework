@@ -7,8 +7,7 @@ namespace MGFramework
     [System.Serializable]
     public class PlayerStateController
     {
-        private Transform _playerT;
-        private PlayerAnimationController _anime;
+        private PlayerData _data;
 
         private Damageable _handlingDamageable = null;
         private Damageable HandlingDamageable
@@ -43,28 +42,30 @@ namespace MGFramework
 
                     if (value == true)
                     {
-                        _anime.StartMining();
+                        _data._Anime.StartMining();
                     }
                     else
                     {
-                        _anime.StopMining();
+                        _data._Anime.StopMining();
                     }
                 }
             }
         }
 
+        private Collider[] overlappedColliders;
+
         private async UniTaskVoid OnHandlingDamageableChangedAsync()
         {
             while (HandlingDamageable != null)
             {
-                Vector3 direction = (HandlingDamageable.transform.position - _playerT.position).normalized;
+                Vector3 direction = (HandlingDamageable.transform.position - _data._PlayerT.position).normalized;
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
                 Vector3 targetToEuler = targetRotation.eulerAngles;
                 Vector3 upwardedEuler = new Vector3(0f, targetToEuler.y, 0f);
                 Quaternion upwardedRotation = Quaternion.Euler(upwardedEuler);
-                _playerT.rotation = Quaternion.RotateTowards(_playerT.rotation, upwardedRotation, lookAtSpeed);
+                _data._PlayerT.rotation = Quaternion.RotateTowards(_data._PlayerT.rotation, upwardedRotation, lookAtSpeed);
 
-                IsCanMining = (_anime.IsMoving == false);
+                IsCanMining = (_data._Anime.IsMoving == false);
 
                 await UniTask.WaitForFixedUpdate();
             }
@@ -83,11 +84,11 @@ namespace MGFramework
         [SerializeField]
         private float lookAtSpeed = 5f;
 
-        public void OnAwake(Transform playerT, PlayerAnimationController anime)
+        public void OnAwake(PlayerData data)
         {
-            _playerT = playerT;
-            _anime = anime;
+            this._data = data;
 
+            overlappedColliders = new Collider[5];
             keyframeReceiver.OnKeyframeReachedEvent += OnKeyframeReachedEvent;
         }
 
@@ -103,15 +104,15 @@ namespace MGFramework
             }
         }
 
-        // Overlap과 GetComponent가 매 프레임 호출되고 있음. 오버헤드 우려됨.
-        public void OnUpdate()
+        public void SlowTick()
         {
-            Collider[] overlappedColliders = Physics.OverlapSphere(_playerT.position, handlingRadius);
             bool gotDamageable = false;
-
-            foreach (Collider overlappedCollider in overlappedColliders)
+            int overlapCount = Physics.OverlapSphereNonAlloc(_data._PlayerT.position, handlingRadius, overlappedColliders);
+   
+            for (int i = 0; i < overlapCount; i++)
             {
-                if (overlappedCollider.transform != this._playerT &&
+                Collider overlappedCollider = overlappedColliders[i];
+                if (overlappedCollider.transform != _data._PlayerT &&
                     overlappedCollider.TryGetComponent(out Damageable damageable) == true &&
                     damageable.IsDead == false)
                 {
@@ -126,6 +127,11 @@ namespace MGFramework
             {
                 HandlingDamageable = null;
             }
+        }
+
+        public void Tick()
+        {
+         
         }
     }
 }

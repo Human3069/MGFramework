@@ -1,14 +1,21 @@
 using _KMH_Framework;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace MGFramework
 {
+    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(Damageable))]
     public class PlayerController : MonoSingleton<PlayerController>
     {
         private Damageable damageable;
 
         [Header("=== PlayerController ===")]
+        [SerializeField]
+        private PlayerData data;
+
+        [Space(10)]
         [SerializeField]
         private PlayerInputController input;
         [SerializeField]
@@ -19,19 +26,31 @@ namespace MGFramework
 
         private void Awake()
         {
+            data._Anime = animator;
             damageable = this.GetComponent<Damageable>();
-            NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
 
-            input.OnAwake(agent);
-            animator.OnAwake(agent);
-            state.OnAwake(this.transform, animator);
+            input.OnAwake(data);
+            animator.OnAwake(data);
+            state.OnAwake(data);
+
+            AwakeAsync().Forget();
+        }
+
+        private async UniTaskVoid AwakeAsync()
+        {
+            while (damageable.IsDead == false)
+            {
+                state.SlowTick();
+
+                await UniTask.WaitForSeconds(0.5f);
+            }
         }
 
         private void Update()
         {
-            input.OnUpdate();
-            animator.OnUpdate();
-            state.OnUpdate();
+            input.Tick();
+            animator.Tick();
+            state.Tick();
         }
 
         private void OnTriggerEnter(Collider collider)

@@ -63,6 +63,12 @@ MonoBehaviour:
     _AttackRange: 2.5
     _AttackOverlapRange: 3.5
     _TowardSpeed: 0.1
+    _OutputType: 1
+    _OutputCountRange: {x: 2, y: 5}
+    _SpawnOffset: {x: 0, y: 0.35, z: 0}
+    _SpawnRadius: 2.75
+    _SpawnLinearForce: 5
+    _SpawnAngularForce: 3
   _monsterState: -1
 --- !u!114 &7591370199651643190
 MonoBehaviour:
