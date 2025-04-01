@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2783390157126791884}
-  - component: {fileID: 4400844236768551763}
+  - component: {fileID: 8212040631026601217}
   - component: {fileID: 7591370199651643190}
   - component: {fileID: 7167269335880869368}
   - component: {fileID: 4733974534393319121}
@@ -36,7 +36,7 @@ Transform:
   - {fileID: 3900578603908752667}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4400844236768551763
+--- !u!114 &8212040631026601217
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,26 +45,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 607116966673307040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b8b7f8386717c9449632da838c90a74, type: 3}
+  m_Script: {fileID: 11500000, guid: d3d3258c6b57ccf47971929544e6d905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 6972011231054249825}
+  isShowLog: 0
   receiver: {fileID: 437097123598960003}
-  outputPoolType: 1
-  outputCountRange: {x: 2, y: 5}
-  spawnOffset: {x: 0, y: 1, z: 0}
-  spawnRadius: 1
-  spawnLinearForce: 5
-  spawnAngularForce: 3
-  minimumSleepRange: 15
-  minimumAlertRange: 7.5
-  _monsterState: 0
-  attackAnimeCount: 4
-  alertLookSpeed: 4
-  attackRange: 2.5
-  attackOverlapRange: 3.5
-  attackDelay: 1
-  attackDamage: 10
+  monsterData:
+    _Monster: {fileID: 8212040631026601217}
+    _Agent: {fileID: 7167269335880869368}
+    _Animator: {fileID: 6972011231054249825}
+    _MonsterT: {fileID: 2783390157126791884}
+    _MinSleepRange: 15
+    _MinAlertRange: 7.5
+    _AttackDelay: 1
+    _AttackAnimeCount: 4
+    _AttackDamage: 10
+    _AttackRange: 2.5
+    _AttackOverlapRange: 3.5
+    _TowardSpeed: 0.1
+  _monsterState: -1
 --- !u!114 &7591370199651643190
 MonoBehaviour:
   m_ObjectHideFlags: 0
