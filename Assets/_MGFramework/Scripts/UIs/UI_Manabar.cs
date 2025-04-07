@@ -29,7 +29,7 @@ namespace MGFramework
         private void FixedUpdate()
         {
             Vector3 screenPos = _info._Camera.WorldToScreenPoint(_info._Progressable.transform.position);
-            this.transform.position = screenPos + Vector3.up * _info._Progressable.OffsetHeight;
+            this.transform.position = screenPos + Vector3.up * _info._Progressable.ProgressOffsetHeight;
 
             float currentAmount = damagedImage.fillAmount;
             float targetAmount = progressedImage.fillAmount;

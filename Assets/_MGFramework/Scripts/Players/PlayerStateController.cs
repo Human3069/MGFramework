@@ -21,8 +21,9 @@ namespace MGFramework
                 if (_handlingDamageable != value)
                 {
                     _handlingDamageable = value;
-
                     OnHandlingDamageableChangedAsync().Forget();
+
+                    _data._Agent.destination = _data._PlayerT.position;
                 }
             }
         }
@@ -89,10 +90,10 @@ namespace MGFramework
             this._data = data;
 
             overlappedColliders = new Collider[5];
-            keyframeReceiver.OnKeyframeReachedEvent += OnKeyframeReachedEvent;
+            keyframeReceiver.OnKeyframeReachedEvent += OnKeyframeReached;
         }
 
-        private void OnKeyframeReachedEvent(int index)
+        private void OnKeyframeReached(int index)
         {
             if (index == 0)
             {

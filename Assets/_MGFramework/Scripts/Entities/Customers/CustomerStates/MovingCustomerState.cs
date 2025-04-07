@@ -1,0 +1,35 @@
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+
+namespace MGFramework
+{
+    public class MovingCustomerState : ICustomerState
+    {
+        private CustomerData _data;
+
+        public MovingCustomerState(CustomerData data)
+        {
+            this._data = data;
+        }
+
+        public void Enter()
+        {
+          
+        }
+
+        public void Exit()
+        {
+
+        }
+
+        public void SlowTick()
+        {
+            
+        }
+
+        public void FixedTick()
+        {
+           
+        }
+    }
+}

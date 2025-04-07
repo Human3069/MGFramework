@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isShowLog: 0
   receiver: {fileID: 437097123598960003}
+  _monsterState: -1
   monsterData:
     _Monster: {fileID: 8212040631026601217}
     _Agent: {fileID: 7167269335880869368}
@@ -65,11 +66,10 @@ MonoBehaviour:
     _TowardSpeed: 0.1
     _OutputType: 1
     _OutputCountRange: {x: 2, y: 5}
-    _SpawnOffset: {x: 0, y: 0.35, z: 0}
-    _SpawnRadius: 2.75
+    _SpawnOffset: {x: 0, y: 1, z: 0}
+    _SpawnRadius: 1
     _SpawnLinearForce: 5
     _SpawnAngularForce: 3
-  _monsterState: -1
 --- !u!114 &7591370199651643190
 MonoBehaviour:
   m_ObjectHideFlags: 0

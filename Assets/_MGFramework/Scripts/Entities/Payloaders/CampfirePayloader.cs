@@ -3,13 +3,14 @@ using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MGFramework
 {
-    public class CampfirePayloader : BasePayloader, IProgressable
+    public class CampfirePayloader : BasePayloader, IProgressable, ITimer
     {
-        [Header("=== IProgressable")]
+        [Header("=== IProgressable ===")]
         [SerializeField]
         private float _maxProgress = 1f;
         public float MaxProgress => _maxProgress;
@@ -31,8 +32,27 @@ namespace MGFramework
         }
 
         [SerializeField]
-        private float _offsetHeight = 0f;
-        public float OffsetHeight => _offsetHeight;
+        private float _progressOffsetHeight = 0f;
+        public float ProgressOffsetHeight => _progressOffsetHeight;
+
+        [Header("=== ITimer ===")]
+        [SerializeField]
+        private float _timerOffsetHeight = 0.5f;
+        public float TimerOffsetHeight => _timerOffsetHeight;
+
+        [SerializeField]
+        private float _normal = 0f;
+        public float Normal
+        {
+            get
+            {
+                return _normal;
+            }
+            set
+            {
+                _normal = value;
+            }
+        }
 
         [Header("=== CampfirePayloader ===")]
         [SerializeField]
@@ -44,15 +64,17 @@ namespace MGFramework
 
         [Space(10)]
         [SerializeField]
-        private float decreasePerSec = 0.01f;
+        private float decreasePerSec = 0.01f; // 초당 화력 소모량
         [SerializeField]
-        private float increasePerCount = 0.4f;
+        private float increasePerCount = 0.4f; // 1개당 화력 증가량
 
         [Space(10)]
         [SerializeField]
         private float storingHeight = 0.25f;
         [SerializeField]
         private float removeDelay = 0.5f;
+        [SerializeField]
+        private float outputDelay = 10f;
 
         private Dictionary<PoolType, List<Item>> itemInstanceDic = new Dictionary<PoolType, List<Item>>();
         private float maxLightIntensity;
@@ -60,6 +82,7 @@ namespace MGFramework
 
         private IProgressable thisProgressable;
         private bool isComsuming = false;
+        private bool isCoocking = false;
 
         private void Awake()
         {
@@ -76,8 +99,8 @@ namespace MGFramework
         {
             thisProgressable.CurrentProgress = Mathf.Clamp01(thisProgressable.CurrentProgress - decreasePerSec * Time.deltaTime);
 
-            RemoveStore(PoolType.Wood, ItemTypeToAction(PoolType.Wood), () => ItemTypeToPredicate(PoolType.Wood)).Forget();
-            RemoveStore(PoolType.RawMeat, ItemTypeToAction(PoolType.RawMeat), () => ItemTypeToPredicate(PoolType.RawMeat)).Forget();
+            RemoveStore(PoolType.Wood, ItemTypeToAction(PoolType.Wood), WoodPredicate).Forget();
+            RemoveStore(PoolType.RawMeat, ItemTypeToAction(PoolType.RawMeat), RawMeatPredicate).Forget();
 
             if (Input.GetKeyDown(KeyCode.Insert))
             {
@@ -176,23 +199,18 @@ namespace MGFramework
             }
         }
 
-        private bool ItemTypeToPredicate(PoolType type)
+        private bool WoodPredicate()
         {
-            switch (type)
-            {
-                case PoolType.Wood:
-                    return thisProgressable.CurrentProgress <= (1f - increasePerCount) &&
-                           isComsuming == false &&
-                           inputDic[PoolType.Wood].Count > 0;
+            return thisProgressable.CurrentProgress <= (1f - increasePerCount) &&
+                   isComsuming == false &&
+                   inputDic[PoolType.Wood].Count > 0;
+        }
 
-                case PoolType.RawMeat:
-                    return thisProgressable.CurrentProgress > 0f &&
-                           isComsuming == false &&
-                           inputDic[PoolType.RawMeat].Count > 0;
-
-                default:
-                    throw new NotImplementedException();
-            }
+        private bool RawMeatPredicate()
+        {
+            return thisProgressable.CurrentProgress > 0f &&
+                   isCoocking == false &&
+                   inputDic[PoolType.RawMeat].Count > 0;
         }
 
         private void OnRemovedWoodAction()
@@ -202,6 +220,29 @@ namespace MGFramework
 
         private void OnRemovedRawMeatAction()
         {
+            OnRemovedRawMeatActionAsync().Forget();
+        }
+
+        private async UniTaskVoid OnRemovedRawMeatActionAsync()
+        {
+            isCoocking = true;
+
+            float timer = 0f;
+            while (timer < outputDelay)
+            {
+                Normal = timer / outputDelay;
+                timer += Time.deltaTime;
+               
+                // 현재 굽다 만 고기를 버리게끔 되어있음.
+                if (_CurrentProgress == 0f)
+                {
+                    return;
+                }
+             
+                await UniTask.Yield();
+            }
+            Normal = 1f;
+
             foreach (KeyValuePair<PoolType, ItemData> pair in outputDic)
             {
                 Transform storeT = pair.Value.StoreT;
@@ -228,6 +269,8 @@ namespace MGFramework
                     itemInstanceDic[pair.Key].Add(poolItem);
                 }
             }
+
+            isCoocking = false;
         }
     }
 }

@@ -14,6 +14,8 @@ namespace MGFramework
         [SerializeField]
         private UI_Manabar manabarPrefab;
         [SerializeField]
+        private UI_Timer timerPrefab;
+        [SerializeField]
         private Transform parentT;
 
         [Space(10)]
@@ -48,6 +50,18 @@ namespace MGFramework
                     uiInstance.Initialize(info);
                 }
             }
+
+            ITimer[] timers = FindObjectsOfType<MonoBehaviour>().OfType<ITimer>().ToArray();
+            foreach (ITimer timer in timers)
+            {
+                if (timer.gameObject.activeInHierarchy == true)
+                {
+                    TimerInfo info = new TimerInfo(_camera, timer, fadeDuration);
+
+                    UI_Timer uiInstance = Instantiate(timerPrefab, parentT);
+                    uiInstance.Initialize(info);
+                }
+            }
         }
 
         public struct HealthbarInfo
@@ -79,6 +93,20 @@ namespace MGFramework
                 this._Progressable = progressable;
                 this._FadeDuration = fadeDuration;
                 this._DamagedFillSpeed = damagedFillSpeed;
+            }
+        }
+
+        public struct TimerInfo
+        {
+            public Camera _Camera;
+            public ITimer _Timer;
+            public float _FadeDuration;
+
+            public TimerInfo(Camera camera, ITimer timer, float fadeDuration)
+            {
+                this._Camera = camera;
+                this._Timer = timer;
+                this._FadeDuration = fadeDuration;
             }
         }
     }

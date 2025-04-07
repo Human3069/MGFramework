@@ -7,7 +7,7 @@ namespace MGFramework
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Damageable))]
-    public class PlayerController : MonoSingleton<PlayerController>
+    public class PlayerController : MonoSingleton<PlayerController>, IInventory
     {
         private Damageable damageable;
 
@@ -22,7 +22,31 @@ namespace MGFramework
         private PlayerAnimationController animator;
         [SerializeField]
         private PlayerStateController state;
-        public PlayerInventory Inventory;
+        [SerializeField]
+        private Inventory _inventory;
+        public Inventory Inventory => _inventory;
+
+        [Space(10)]
+        [SerializeField]
+        private float defaultSpeed = 5f;
+        [SerializeField]
+        private float linkedSpeed = 2f;
+
+        private bool _isOnOffMeshLink = false;
+        private bool IsOnOffMeshLink
+        {
+            get
+            {
+                return _isOnOffMeshLink;
+            }
+            set
+            {
+                if (_isOnOffMeshLink != value)
+                {
+                    _isOnOffMeshLink = value;
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -51,6 +75,8 @@ namespace MGFramework
             input.Tick();
             animator.Tick();
             state.Tick();
+
+            IsOnOffMeshLink = data._Agent.isOnOffMeshLink;
         }
 
         private void OnTriggerEnter(Collider collider)

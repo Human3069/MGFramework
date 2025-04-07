@@ -8,7 +8,18 @@ namespace MGFramework
 {
     public class Harvestable : MonoBehaviour
     {
-        private Damageable damageable;
+        private Damageable _damageable;
+        public Damageable _Damageable
+        {
+            get
+            {
+                return _damageable;
+            }
+            private set
+            {
+                _damageable = value;
+            }
+        }
 
         [Header("=== Harvestable ===")]
         [SerializeField]
@@ -37,9 +48,17 @@ namespace MGFramework
         private Collider[] colliders;
         private NavMeshObstacle obstacle;
 
+        public bool IsHarvestable
+        {
+            get
+            {
+                return !_Damageable.IsDead;
+            }
+        }
+
         protected virtual void Awake()
         {
-            damageable = this.GetComponent<Damageable>();
+            _Damageable = this.GetComponent<Damageable>();
 
             alivedObj.SetActive(true);
             deadObj.SetActive(false);
@@ -47,10 +66,10 @@ namespace MGFramework
             colliders = this.GetComponents<Collider>();
             obstacle = this.GetComponent<NavMeshObstacle>();
 
-            damageable.OnAlivedEvent += OnAlived;
-            damageable.OnDamagedEvent += OnDamaged;
-            damageable.OnDeadEvent += OnDead;
-            damageable.OnAfterDeadEvent += OnAfterDead;
+            _Damageable.OnAlivedEvent += OnAlived;
+            _Damageable.OnDamagedEvent += OnDamaged;
+            _Damageable.OnDeadEvent += OnDead;
+            _Damageable.OnAfterDeadEvent += OnAfterDead;
         }
 
         public void OnAlived()
@@ -109,7 +128,7 @@ namespace MGFramework
         private async UniTaskVoid OnAfterDeadAsync()
         {
             await UniTask.WaitForSeconds(regenerationDelay);
-            damageable.SetAlive();
+            _Damageable.SetAlive();
         }
 
         private void OnDrawGizmosSelected()

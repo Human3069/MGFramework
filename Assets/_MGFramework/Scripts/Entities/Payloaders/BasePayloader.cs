@@ -21,29 +21,29 @@ namespace MGFramework
         [SerializeField]
         private bool isSuction = true;
 
-        private bool _isOn = false;
-        protected bool IsOn
+        private IInventory _openedInventory = null;
+        protected IInventory OpenedInventory
         {
             get
             {
-                return _isOn;
+                return _openedInventory;
             }
             private set
             {
-                if (_isOn != value)
+                if (_openedInventory != value)
                 {
-                    _isOn = value;
-                    if (value == true)
+                    _openedInventory = value;
+                    if (value != null)
                     {
-                        OnAsync().Forget();
+                        OpenedAsync().Forget();
                     }
                 }
             }
         }
 
-        private async UniTaskVoid OnAsync()
+        private async UniTaskVoid OpenedAsync()
         {
-            while (IsOn == true)
+            while (OpenedInventory != null)
             {
                 if (TryInput(out PoolType inputItem) == true)
                 {
@@ -56,7 +56,7 @@ namespace MGFramework
 
         protected virtual bool TryInput(out PoolType inputPoolType)
         {
-            PlayerInventory inventory = PlayerController.Instance.Inventory;
+            Inventory inventory = OpenedInventory.Inventory;
             Vector3? suctionPoint = isSuction == true ? this.transform.position : null;
 
             foreach (KeyValuePair<PoolType, ItemData> pair in inputDic)
@@ -89,17 +89,20 @@ namespace MGFramework
 
         private void OnTriggerEnter(Collider collider)
         {
-            if (collider.TryGetComponent<PlayerController>(out _) == true)
+            if (collider.TryGetComponent(out IInventory inventory) == true)
             {
-                IsOn = true;
+                OpenedInventory = inventory;
             }
         }
 
         private void OnTriggerExit(Collider collider)
         {
-            if (collider.TryGetComponent<PlayerController>(out _) == true)
+            if (collider.TryGetComponent(out IInventory inventory) == true)
             {
-                IsOn = false;
+                if (OpenedInventory == inventory)
+                {
+                    OpenedInventory = null;
+                }
             }
         }
     }

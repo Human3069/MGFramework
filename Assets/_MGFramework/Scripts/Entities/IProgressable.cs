@@ -48,7 +48,7 @@ namespace MGFramework
             set;
         }
 
-        float OffsetHeight
+        float ProgressOffsetHeight
         {
             get;
         }

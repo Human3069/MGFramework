@@ -101,7 +101,8 @@ MonoBehaviour:
   isSuction: 1
   _maxProgress: 1
   _currentProgress: 0
-  _offsetHeight: -15
+  _progressOffsetHeight: -25
+  _timerOffsetHeight: -35
   flameT: {fileID: 2613411211611214488}
   flameLight: {fileID: 2895282495410866549}
   flameParticle: {fileID: 2613411211611214470}
@@ -109,6 +110,7 @@ MonoBehaviour:
   increasePerCount: 0.4
   storingHeight: 0.25
   removeDelay: 0.5
+  outputDelay: 10
 --- !u!54 &6560293827748630959
 Rigidbody:
   m_ObjectHideFlags: 0

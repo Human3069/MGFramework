@@ -17,7 +17,7 @@ namespace MGFramework
             _data._Animator.SetTrigger("IsStopValueChanged");
 
             // Tick은 Enter와 별도 호출이므로, Enter에서도 플레이어 따라가게 처리
-            Vector3 towardedPos = _data._MonsterT.GetForwardPositionTowardsPlayer(0.1f);
+            Vector3 towardedPos = _data._MonsterT.GetForwardPositionTowardsPlayer(0.5f);
             _data._Agent.destination = towardedPos;
         }
 
@@ -29,7 +29,7 @@ namespace MGFramework
         public void SlowTick()
         {
             // 플레이어 따라감
-            Vector3 towardedPos = _data._MonsterT.GetForwardPositionTowardsPlayer(0.1f);
+            Vector3 towardedPos = _data._MonsterT.GetForwardPositionTowardsPlayer(0.5f);
             _data._Agent.destination = towardedPos;
 
             // 거리별 상태 전환 처리 
