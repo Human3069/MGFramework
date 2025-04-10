@@ -36,6 +36,36 @@ namespace MGFramework
             }
         }
 
+        public bool TryPush(PoolType type)
+        {
+            // 인벤토리에 적재
+            if (itemList.Count < maxItemCount)
+            {
+                type.EnablePool(OnBeforeEnable);
+                void OnBeforeEnable(GameObject poolObj)
+                {
+                    Item poolItem = poolObj.GetComponent<Item>();
+                    poolItem.IsOnInventory = true;
+
+                    Vector3 offset = inventoryT.up * heightOffset * itemList.Count;
+                    poolObj.transform.parent = inventoryT;
+                    poolObj.transform.localScale = Vector3.one;
+                    poolObj.transform.position = inventoryT.position + offset;
+                    poolObj.transform.localEulerAngles = Vector3.zero;
+
+                    itemList.Add(poolItem);
+                }
+
+                ValidateItemList();
+                return true;
+            }
+            else
+            {
+                ValidateItemList();
+                return false;
+            }
+        }
+
         public bool TryPush(Item item)
         {
             // 인벤토리에 적재

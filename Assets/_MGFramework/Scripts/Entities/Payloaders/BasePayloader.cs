@@ -1,12 +1,13 @@
 using _KMH_Framework.Pool;
 using AYellowpaper.SerializedCollections;
 using Cysharp.Threading.Tasks;
-using geniikw.DataRenderer2D.Hole;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace MGFramework
 {
+    [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Rigidbody))]
     public abstract class BasePayloader : MonoBehaviour
     {
         [Header("=== BasePayloader ===")]
@@ -20,6 +21,20 @@ namespace MGFramework
         private float inputDelay = 0.5f;
         [SerializeField]
         private bool isSuction = true;
+
+        public int TotalInputCount
+        {
+            get
+            {
+                int totalCount = 0;
+                foreach (KeyValuePair<PoolType, ItemData> pair in inputDic)
+                {
+                    totalCount += pair.Value.Count;
+                }
+
+                return totalCount;
+            }
+        }
 
         private IInventory _openedInventory = null;
         protected IInventory OpenedInventory

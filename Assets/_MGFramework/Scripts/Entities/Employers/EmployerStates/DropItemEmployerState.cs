@@ -17,6 +17,7 @@ namespace MGFramework
 
         public void Enter()
         {
+#if false
             // 가장 가까운 Payloader를 찾는다.
             BasePayloader[] payloaders = Object.FindObjectsOfType<BasePayloader>(false);
             BasePayloader nearestPayloader = null;
@@ -31,8 +32,23 @@ namespace MGFramework
                     nearestDistance = distance;
                 }
             }
+#endif
 
-            targetPayloader = nearestPayloader;
+            // 가장 총 Input이 적은 Payloader를 찾는다.
+            BasePayloader[] payloaders = Object.FindObjectsOfType<BasePayloader>(false);
+            BasePayloader poorestPayloader = null;
+            int poorestInputCount = int.MaxValue;
+
+            foreach (BasePayloader payloader in payloaders)
+            {
+                if (payloader.TotalInputCount < poorestInputCount)
+                {
+                    poorestPayloader = payloader;
+                    poorestInputCount = payloader.TotalInputCount;
+                }
+            }
+
+            targetPayloader = poorestPayloader;
 
             // 위치 지정
             Collider payloaderCollider = targetPayloader.GetComponent<Collider>();

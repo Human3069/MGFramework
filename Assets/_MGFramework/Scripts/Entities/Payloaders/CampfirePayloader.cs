@@ -3,7 +3,6 @@ using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MGFramework
@@ -42,17 +41,20 @@ namespace MGFramework
 
         [SerializeField]
         private float _normal = 0f;
-        public float Normal
+        public float _Normal
         {
-            get
-            {
-                return _normal;
-            }
-            set
-            {
-                _normal = value;
-            }
+            get => _normal;
+            set => _normal = value;
         }
+
+        private ITimer.NormalChangedDelegate _onNormalChangedEvent;
+        public ITimer.NormalChangedDelegate OnNormalChangedEvent
+        {
+            get => _onNormalChangedEvent;
+            set => _onNormalChangedEvent = value;
+        }
+
+        private ITimer timer;
 
         [Header("=== CampfirePayloader ===")]
         [SerializeField]
@@ -77,6 +79,7 @@ namespace MGFramework
         private float outputDelay = 10f;
 
         private Dictionary<PoolType, List<Item>> itemInstanceDic = new Dictionary<PoolType, List<Item>>();
+
         private float maxLightIntensity;
         private float maxParticleRateOverTime;
 
@@ -93,6 +96,9 @@ namespace MGFramework
 
             thisProgressable = this;
             thisProgressable.CurrentProgress = MaxProgress;
+
+            timer = this;
+            timer.Normal = 0f;
         }
 
         private void Update()
@@ -227,11 +233,11 @@ namespace MGFramework
         {
             isCoocking = true;
 
-            float timer = 0f;
-            while (timer < outputDelay)
+            float time = 0f;
+            while (time < outputDelay)
             {
-                Normal = timer / outputDelay;
-                timer += Time.deltaTime;
+                this.timer.Normal = time / outputDelay;
+                time += Time.deltaTime;
                
                 // 현재 굽다 만 고기를 버리게끔 되어있음.
                 if (_CurrentProgress == 0f)
@@ -241,7 +247,7 @@ namespace MGFramework
              
                 await UniTask.Yield();
             }
-            Normal = 1f;
+            this.timer.Normal = 1f;
 
             foreach (KeyValuePair<PoolType, ItemData> pair in outputDic)
             {
@@ -271,6 +277,32 @@ namespace MGFramework
             }
 
             isCoocking = false;
+        }
+
+        public int GetCurrentOutputCount(PoolType outputPoolType)
+        {
+            if (outputDic.ContainsKey(outputPoolType) == false)
+            {
+                return -1;
+            }
+            else
+            {
+                return outputDic[outputPoolType].Count;
+            }
+        }
+
+        public void DecreaseOutput(PoolType outputPoolType)
+        {
+            outputDic[outputPoolType].Count--;
+        }
+
+        public void DisableLastItem(PoolType outputPoolType)
+        {
+            List<Item> itemList = itemInstanceDic[outputPoolType];
+            Item lastItem = itemList[itemList.Count - 1];
+            lastItem.DisableAsync().Forget();
+
+            itemList.Remove(lastItem);
         }
     }
 }
