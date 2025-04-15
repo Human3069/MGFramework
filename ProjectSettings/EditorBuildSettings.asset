@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_ArcadeIdleEngine/Demo/_Scenes/Booting.unity
+    guid: 6758ce2638f654b7695a5d4ac785eaf2
+  - enabled: 1
+    path: Assets/_ArcadeIdleEngine/Demo/_Scenes/Showcase.unity
+    guid: 6dd483661810b8341bedc240271b220d
+  - enabled: 1
+    path: Assets/_ArcadeIdleEngine/Demo/_Scenes/Sample Game.unity
+    guid: fac098ddc0a9d46e69ce466f1847edd8
   m_configObjects: {}

@@ -7,11 +7,19 @@ namespace _KMH_Framework.Pool
     {
         None = -1,
 
-        Wood = 0,
-        RawMeat = 1,
-        CookedMeat = 2,
+        Item_Wood = 0,
+        Item_RawMeat = 1,
+        Item_CookedMeat = 2,
 
-        PlayerMarker = 100,
+        Stackable_Wood = 50,
+        Stackable_RawMeat = 51,
+        Stackable_CookedMeat = 52,
+
+        Customer = 100,
+
+        PlayerMarker = 200,
+
+        UI_Timer = 300,
     }
 
     [System.Serializable]

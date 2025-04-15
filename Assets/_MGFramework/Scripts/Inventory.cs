@@ -1,0 +1,124 @@
+using _KMH_Framework;
+using _KMH_Framework.Pool;
+using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace MGFramework
+{
+    public class Inventory : MonoBehaviour
+    {
+        private const float SLOW_TICK_DURATION = 0.2f;
+        private const float MAGNETIC_RADIUS = 1f;
+
+        [SerializeField]
+        private float stackHeight = 0.3f;
+
+        [Space(10)]
+        [SerializeField]
+        private Transform stackTransform;
+        [SerializeField]
+        private List<Stackable> stackableList = new List<Stackable>();
+
+        private Collider[] overlapColliders = new Collider[10];
+
+        private void OnEnable()
+        {
+            OnEnableAsync().Forget();
+        }
+
+        private async UniTaskVoid OnEnableAsync()
+        {
+            while (this.enabled == true)
+            {
+                List<Item> itemList = FindItemList();
+                foreach (Item item in itemList)
+                {
+                    StackItem(item);
+                }
+
+                await UniTask.WaitForSeconds(SLOW_TICK_DURATION);
+            }
+        }
+
+        private List<Item> FindItemList()
+        {
+            int overlapCount = Physics.OverlapSphereNonAlloc(this.transform.position, MAGNETIC_RADIUS, overlapColliders);
+            List<Item> itemList = new List<Item>();
+
+            for (int i = 0; i < overlapCount; i++)
+            {
+                Collider overlapCollider = overlapColliders[i];
+                if (overlapCollider.TryGetComponent(out Item item) == true)
+                {
+                    itemList.Add(item);
+                }
+            }
+
+            return itemList;
+        }
+
+        // Item => 독립적으로 존재.
+        // Stack => Item과 똑같이 생겼으나, 쌓여있는 형태.
+        private void StackItem(Item item)
+        {
+            // Item에 대한 처리
+            PoolType itemPoolType = item.ItemPoolType;
+            item.gameObject.DisablePool(itemPoolType);
+
+            // Stack에 대한 처리
+            PoolType stackPoolType = item.ToStackableType();
+            Push(stackPoolType);
+        }
+
+        public void Push(PoolType stackPoolType)
+        {
+            GameObject stackObj = stackPoolType.EnablePool();
+            Stackable stack = stackObj.GetComponent<Stackable>();
+
+            int stackIndex = stackableList.Count;
+            Vector3 stackLocalPos = Vector3.up * stackIndex * stackHeight;
+
+            stackableList.Add(stack);
+
+            stack.transform.parent = stackTransform;
+            stack.transform.localPosition = stackLocalPos;
+            stack.transform.localRotation = Quaternion.identity;
+        }
+
+        public bool TryPop(PoolType poolType, out Stackable stackable)
+        {
+            stackable = stackableList.FindLast(x => x.StackablePoolType == poolType);
+            if (stackable != null)
+            {
+                stackableList.Remove(stackable);
+            }
+
+            return stackable != null;
+        }
+
+#if UNITY_EDITOR
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                GameObject meatItemObj = PoolType.Item_RawMeat.EnablePool();
+                Item meatItem = meatItemObj.GetComponent<Item>();
+                StackItem(meatItem);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                GameObject woodItemObj = PoolType.Item_Wood.EnablePool();
+                Item woodItem = woodItemObj.GetComponent<Item>();
+                StackItem(woodItem);
+            }
+        }
+#endif
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(this.transform.position, MAGNETIC_RADIUS);
+        }
+    }
+}

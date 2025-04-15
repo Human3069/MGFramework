@@ -76,7 +76,7 @@ namespace _KMH_Framework
         {
             GameObject prefab = poolableDic[type].prefab;
             GameObject instance = Instantiate(prefab);
-            instance.transform.parent = parentDic[type];
+            instance.transform.SetParent(parentDic[type]);
 
             return instance;
         }
@@ -130,7 +130,7 @@ namespace _KMH_Framework
                 poolable.OnBeforeDisable();
             }
             obj.SetActive(false);
-            obj.transform.parent = parentDic[type];
+            obj.transform.SetParent(parentDic[type]);
             if (poolable != null)
             {
                 poolable.OnAfterDisable();
