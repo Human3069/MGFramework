@@ -20,6 +20,7 @@ namespace _KMH_Framework.Pool
         PlayerMarker = 200,
 
         UI_Timer = 300,
+        UI_Healthbar = 301,
     }
 
     [System.Serializable]

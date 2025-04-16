@@ -9,8 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2652952993316659260}
+  - component: {fileID: 8269465207298968358}
+  - component: {fileID: 3211056022717017254}
   m_Layer: 0
-  m_Name: Transform_Input_RawMeatStore
+  m_Name: Store_Input_RawMeatStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,6 +33,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 992753594396310118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8269465207298968358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030289799197722512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c79e37ade667c44e8469c20efd567b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolType: 51
+  stackTransform: {fileID: 2652952993316659260}
+  speed: 0.5
+  payCount: 1
+  stackHeight: 0.3
+  stackableList: []
+--- !u!135 &3211056022717017254
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030289799197722512}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0.3, y: 0, z: -1.5}
 --- !u!1 &2261888191176657882
 GameObject:
   m_ObjectHideFlags: 0
@@ -80,29 +121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6c57867706a474dac314cd02f41ab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enteredInventory: {fileID: 0}
-  inputDic:
-    _serializedList:
-    - Key: 50
-      Value:
-        PayCount: 2
-        StackHeight: 0.3
-        StackTransform: {fileID: 3168918208156454430}
-        StackableList: []
-    - Key: 51
-      Value:
-        PayCount: 1
-        StackHeight: 0.3
-        StackTransform: {fileID: 2652952993316659260}
-        StackableList: []
-  outputDic:
-    _serializedList:
-    - Key: 52
-      Value:
-        PayCount: 1
-        StackHeight: 0.3
-        StackTransform: {fileID: 4726621335369297408}
-        StackableList: []
+  inputStores:
+  - {fileID: 6690397061536701608}
+  - {fileID: 8269465207298968358}
+  outputStores:
+  - {fileID: 8724300732933066164}
   inputSpeed: 0.5
   outputSpeed: 10
   yOffset: -30
@@ -136,8 +159,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4726621335369297408}
+  - component: {fileID: 8724300732933066164}
+  - component: {fileID: 5172530640045345141}
   m_Layer: 0
-  m_Name: Transform_Output_CoockedMeatStore
+  m_Name: Store_Output_CoockedMeatStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,6 +183,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 992753594396310118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8724300732933066164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7514976248252156554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9150b7743d3f93544aedd3e2363be5b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolType: 52
+  stackTransform: {fileID: 4726621335369297408}
+  speed: 0.5
+  payCount: 1
+  stackHeight: 0.3
+  stackableList: []
+--- !u!135 &5172530640045345141
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7514976248252156554}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8619009812515122758
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,8 +231,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3168918208156454430}
+  - component: {fileID: 6690397061536701608}
+  - component: {fileID: 6179871376980785877}
   m_Layer: 0
-  m_Name: Transform_Input_WoodStore
+  m_Name: Store_Input_WoodStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -189,6 +255,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 992753594396310118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6690397061536701608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8619009812515122758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c79e37ade667c44e8469c20efd567b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolType: 50
+  stackTransform: {fileID: 3168918208156454430}
+  speed: 0.5
+  payCount: 2
+  stackHeight: 0.3
+  stackableList: []
+--- !u!135 &6179871376980785877
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8619009812515122758}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: -0.3, y: 0, z: -1.5}
 --- !u!1001 &8935268578237812778
 PrefabInstance:
   m_ObjectHideFlags: 0

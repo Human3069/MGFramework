@@ -24,6 +24,15 @@ namespace MGFramework
         public void OnAwake(PlayerData data)
         {
             this._data = data;
+            this._data.Behaviour.OnTargetStay += OnTargetStay;
+        }
+
+        private void OnTargetStay(Damageable damageable)
+        {
+            Vector3 targetDirection = (damageable.transform.position - _data._Transform.position).normalized;
+            Quaternion desiredRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+
+            _data._Transform.rotation = Quaternion.RotateTowards(_data._Transform.rotation, desiredRotation, lookSpeed * Time.deltaTime);
         }
 
         public void OnInputDown()

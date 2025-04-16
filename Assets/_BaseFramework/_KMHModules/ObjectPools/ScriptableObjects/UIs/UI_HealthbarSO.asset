@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d90f45fec32f3d449ae24047f0c5724, type: 3}
+  m_Name: UI_HealthbarSO
+  m_EditorClassIdentifier: 
+  poolable:
+    type: 301
+    prefab: {fileID: 5394591450176236390, guid: dea5c59da9e89ba45b3a9d05da143660,
+      type: 3}
+    initCount: 10
+    maxCount: 20

@@ -97,24 +97,6 @@ namespace MGFramework
             return stackable != null;
         }
 
-#if UNITY_EDITOR
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                GameObject meatItemObj = PoolType.Item_RawMeat.EnablePool();
-                Item meatItem = meatItemObj.GetComponent<Item>();
-                StackItem(meatItem);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                GameObject woodItemObj = PoolType.Item_Wood.EnablePool();
-                Item woodItem = woodItemObj.GetComponent<Item>();
-                StackItem(woodItem);
-            }
-        }
-#endif
-
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;

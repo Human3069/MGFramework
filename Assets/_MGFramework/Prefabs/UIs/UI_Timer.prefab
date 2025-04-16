@@ -160,8 +160,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7642562248853459717}
   - component: {fileID: 1139948994032467916}
-  - component: {fileID: 6108228151088797698}
   - component: {fileID: 2061550433190752130}
+  - component: {fileID: 6108228151088797698}
   m_Layer: 5
   m_Name: UI_Timer
   m_TagString: Untagged
@@ -203,14 +203,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   progressedImage: {fileID: 7719710158254520957}
---- !u!222 &6108228151088797698
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5394591450176236390}
-  m_CullTransparentMesh: 1
 --- !u!225 &2061550433190752130
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -223,3 +215,11 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!222 &6108228151088797698
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5394591450176236390}
+  m_CullTransparentMesh: 1

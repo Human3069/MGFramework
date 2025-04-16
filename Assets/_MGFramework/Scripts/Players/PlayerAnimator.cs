@@ -20,6 +20,13 @@ namespace MGFramework
         public void OnAwake(PlayerData data)
         {
             this._data = data;
+            this._data.Behaviour.OnTargetChanged += OnTargetChanged;
+        }
+
+        private void OnTargetChanged(Damageable damageable)
+        {
+            animator.SetBool("IsAttack", damageable != null);
+            animator.SetTrigger("IsAttackStateChanged");
         }
 
         public void Tick()
