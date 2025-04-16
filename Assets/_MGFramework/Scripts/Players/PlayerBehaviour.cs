@@ -35,7 +35,17 @@ namespace MGFramework
             {
                 if (_targetDamageable != value)
                 {
+                    if (_targetDamageable != null)
+                    {
+                        _targetDamageable.Exit();
+                    }
+
                     _targetDamageable = value;
+                    
+                    if (_targetDamageable != null)
+                    {
+                        _targetDamageable.Enter();
+                    }
 
                     OnTargetChanged?.Invoke(value);
                     OnTargetChangedAsync().Forget();
@@ -79,7 +89,7 @@ namespace MGFramework
                 if (TargetDamageable == null)
                 {
                     Vector3 middlePoint = _data._Transform.position;
-                    int overlapCount = Physics.OverlapSphereNonAlloc(middlePoint, maxAttackRange, overlapCollider);
+                    int overlapCount = Physics.OverlapSphereNonAlloc(middlePoint, minAttackRange, overlapCollider);
                     for (int i = 0; i < overlapCount; i++)
                     {
                         Collider collider = overlapCollider[i];

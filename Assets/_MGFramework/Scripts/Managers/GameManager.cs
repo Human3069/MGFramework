@@ -9,10 +9,12 @@ namespace MGFramework
     public class GameManager : MonoBehaviour
     {
         private Inventory playerInventory;
+        private Inventory employeeInventory;
 
         private void Awake()
         {
             playerInventory = Player.Instance.GetComponent<Inventory>();
+            employeeInventory = Object.FindObjectOfType<Employee>().GetComponent<Inventory>();
         }
 
 #if UNITY_EDITOR
@@ -34,6 +36,10 @@ namespace MGFramework
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 playerInventory.Push(PoolType.Stackable_Wood);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                employeeInventory.Push(PoolType.Stackable_CookedMeat);
             }
         }
 #endif

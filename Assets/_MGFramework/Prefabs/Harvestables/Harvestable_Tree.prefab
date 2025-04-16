@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6636998343465118566}
+  - component: {fileID: 1168799128311771508}
   - component: {fileID: 3811240751533715912}
   - component: {fileID: 764810718928338533}
   - component: {fileID: 794792765729933865}
@@ -35,6 +36,27 @@ Transform:
   - {fileID: 320396069117423771}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1168799128311771508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4375506023907205435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0db2eb183494704dad4c089f1e38d8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Damageable: {fileID: 3811240751533715912}
+  _animation: {fileID: 0}
+  alivedObj: {fileID: 0}
+  deadObj: {fileID: 1097073093078985249}
+  dropPoolType: 0
+  dropItemOffset: {x: 0, y: 4.5, z: 0}
+  dropItemRadius: 2
+  dropCountRange: {x: 2, y: 5}
+  rebirthTimeRange: {x: 30, y: 90}
 --- !u!114 &3811240751533715912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,9 +69,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2428a2a593e0c042b4c44c84900cb9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animation: {fileID: 0}
-  alivedObj: {fileID: 0}
-  deadObj: {fileID: 1097073093078985249}
   maxHealth: 100
   _currentHealth: 0
   _isDead: 0

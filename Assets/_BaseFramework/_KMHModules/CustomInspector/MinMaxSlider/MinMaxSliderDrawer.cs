@@ -10,6 +10,9 @@ public class MinMaxSliderDrawer : PropertyDrawer
         MinMaxSliderAttribute _sliderAttribute = attribute as MinMaxSliderAttribute;
         EditorGUI.BeginProperty(position, label, property);
 
+        // 필드 이름(라벨)을 먼저 그리고 나머지 영역 확보
+        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
         if (property.propertyType == SerializedPropertyType.Vector2)
         {
             float minValue = property.vector2Value.x;
@@ -44,9 +47,7 @@ public class MinMaxSliderDrawer : PropertyDrawer
         }
         else
         {
-            Rect labelRect = new Rect(position.x, position.y, position.width, position.height);
-
-            EditorGUI.LabelField(labelRect, "Use Vector2 or Vector2Int Type");
+            EditorGUI.LabelField(position, "Use Vector2 or Vector2Int Type");
         }
 
         EditorGUI.EndProperty();

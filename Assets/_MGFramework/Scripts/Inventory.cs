@@ -22,6 +22,21 @@ namespace MGFramework
 
         private Collider[] overlapColliders = new Collider[10];
 
+        public List<PoolType> GetPoolTypeList()
+        {
+            List<PoolType> poolTypeList = new List<PoolType>();
+            foreach (Stackable stackable in stackableList)
+            {
+                PoolType poolType = stackable.StackablePoolType;
+                if (poolTypeList.Contains(poolType) == false)
+                {
+                    poolTypeList.Add(poolType);
+                }
+            }
+
+            return poolTypeList;
+        }
+
         private void OnEnable()
         {
             OnEnableAsync().Forget();
@@ -84,6 +99,8 @@ namespace MGFramework
             stack.transform.parent = stackTransform;
             stack.transform.localPosition = stackLocalPos;
             stack.transform.localRotation = Quaternion.identity;
+
+            ReformPosition();
         }
 
         public bool TryPop(PoolType poolType, out Stackable stackable)
@@ -94,7 +111,20 @@ namespace MGFramework
                 stackableList.Remove(stackable);
             }
 
+            ReformPosition();
             return stackable != null;
+        }
+
+        /// <summary>
+        /// 아이템 재정렬
+        /// </summary>
+        private void ReformPosition()
+        {
+            for (int i = 0; i < stackableList.Count; i++)
+            {
+                Vector3 stackLocalPos = Vector3.up * i * stackHeight;
+                stackableList[i].transform.localPosition = stackLocalPos;
+            }
         }
 
         private void OnDrawGizmosSelected()

@@ -7,15 +7,6 @@ namespace MGFramework
     {
         private Collider _collider;
 
-        [SerializeField]
-        private Animation _animation;
-
-        [Space(10)]
-        [SerializeField]
-        private GameObject alivedObj;
-        [SerializeField]
-        private GameObject deadObj;
-
         [Space(10)]
         [SerializeField]
         private float maxHealth;
@@ -87,6 +78,18 @@ namespace MGFramework
         public event DeadDelegate OnDeadEvent;
 
         private bool isShownHealthbar = false;
+        private bool _isEntered = false; // 누군가 점유중일 때 true
+        public bool IsEntered
+        {
+            get
+            {
+                return _isEntered;
+            }
+            private set
+            {
+                _isEntered = value;
+            }
+        }
 
         public Vector3 GetClosestPoint(Vector3 point)
         {
@@ -99,45 +102,24 @@ namespace MGFramework
 
             CurrentHealth = maxHealth;
             IsDead = false;
-
-            if (alivedObj != null)
-            {
-                alivedObj.SetActive(true);
-            }
-            if (deadObj != null)
-            {
-                deadObj.SetActive(false);
-            }
         }
 
         [ContextMenu("Alive")]
-        private void Alive()
+        public void Alive()
         {
             if (Application.isPlaying == true)
             {
                 CurrentHealth = maxHealth;
                 IsDead = false;
 
-                if (alivedObj != null)
-                {
-                    alivedObj.SetActive(true);
-                }
-                if (deadObj != null)
-                {
-                    deadObj.SetActive(false);
-                }
-
                 OnAlivedEvent?.Invoke();
-
-                _animation.Play("OnAlived");
             }
         }
 
         private void OnDamaged()
         {
             OnDamagedEvent?.Invoke();
-            _animation.Play("OnDamaged");
-
+          
             if (isShownHealthbar == false)
             {
                 isShownHealthbar = true;
@@ -152,9 +134,6 @@ namespace MGFramework
                 IsDead = true;
                 OnDeadEvent?.Invoke();
 
-                AnimationState state = _animation.PlayQueued("OnDead");
-                OnDeadAsync(state).Forget();
-
                 if (isShownHealthbar == true)
                 {
                     isShownHealthbar = false;
@@ -162,19 +141,14 @@ namespace MGFramework
             }
         }
 
-        private async UniTaskVoid OnDeadAsync(AnimationState state)
+        public void Enter()
         {
-            if (deadObj != null)
-            {
-                deadObj.SetActive(true);
-            }
+            IsEntered = true;
+        }
 
-            await UniTask.WaitWhile(() => state != null);
-
-            if (alivedObj != null)
-            {
-                alivedObj.SetActive(false);
-            }
+        public void Exit()
+        {
+            IsEntered = false;
         }
     }
 }

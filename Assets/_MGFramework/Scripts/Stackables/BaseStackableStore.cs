@@ -13,6 +13,8 @@ namespace MGFramework
     [RequireComponent(typeof(Collider))]
     public abstract class BaseStackableStore : MonoBehaviour
     {
+        private Collider _collider;
+
         [SerializeField]
         protected PoolType poolType = PoolType.None;
         [SerializeField]
@@ -49,6 +51,16 @@ namespace MGFramework
         }
 
         protected abstract UniTaskVoid OnInventoryEnteredAsync();
+
+        public Vector3 GetClosestPoint(Vector3 point)
+        {
+            return _collider.ClosestPoint(point);
+        }
+
+        protected virtual void Awake()
+        {
+            _collider = this.GetComponent<Collider>();
+        }
 
         protected void OnTriggerEnter(Collider collider)
         {

@@ -110,6 +110,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1168799128311771508, guid: 008b9d406b0f7ae44bc509b8c5ffd6bd,
+        type: 3}
+      propertyPath: alivedObj
+      value: 
+      objectReference: {fileID: 2611815280367634273}
+    - target: {fileID: 1168799128311771508, guid: 008b9d406b0f7ae44bc509b8c5ffd6bd,
+        type: 3}
+      propertyPath: _animation
+      value: 
+      objectReference: {fileID: 4867117157145456898}
     - target: {fileID: 3811240751533715912, guid: 008b9d406b0f7ae44bc509b8c5ffd6bd,
         type: 3}
       propertyPath: alivedObj
