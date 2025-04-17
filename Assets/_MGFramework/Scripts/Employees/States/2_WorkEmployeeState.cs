@@ -6,35 +6,28 @@ namespace MGFramework
 {
     public class WorkEmployeeState : IEmployeeState
     {
-        private Employee _employee;
+        private EmployeeContext _context;
+        private EmployeeData _data;
 
-        public void Enter(Employee employee)
+        public void Enter(EmployeeContext context, EmployeeData data)
         {
-            this._employee = employee;
-            this._employee.PlayWorkingAnimation(true);
+            this._context = context;
+            this._data = data;
+
+            this._context.AnimationController.PlayWorking(true);
         }
 
         public void Exit()
         {
-            this._employee.PlayWorkingAnimation(false);
-            this._employee.TargetHarvestable = null;
-        }
-
-        public void Tick()
-        {
-
-        }
-
-        public void FixedTick()
-        {
-        
+            this._context.AnimationController.PlayWorking(false);
+            this._context.TargetHarvestable = null;
         }
 
         public void SlowTick()
         {
-            if (_employee.TargetHarvestable._Damageable.IsDead == true)
+            if (_context.TargetHarvestable._Damageable.IsDead == true)
             {
-                _employee.State = EmployeeState.PickUpItems;
+                _context.StateMachine.ChangeState(new PickUpItemsEmployeeState());
             }
         }
     }

@@ -3,27 +3,11 @@ using UnityEngine;
 
 namespace MGFramework
 {
-    [System.Serializable]
     public class PlayerBehaviour
     {
+        private PlayerContext _context;
         private PlayerData _data;
 
-        [SerializeField]
-        private float slowTickRate = 0.5f;
-
-        [Space(10)]
-        [SerializeField]
-        private float minAttackRange = 1f;
-        [SerializeField]
-        private float maxAttackRange = 1.25f;
-
-        [Space(10)]
-        [SerializeField]
-        private float attackDamage = 30f;
-
-        [Space(10)]
-        [ReadOnly]
-        [SerializeField]
         private Damageable _targetDamageable;
         private Damageable TargetDamageable
         {
@@ -71,9 +55,24 @@ namespace MGFramework
         public delegate void TargetStayDelegate(Damageable damageable);
         public event TargetStayDelegate OnTargetStay; // 매 프레임 호출
 
-        public void OnAwake(PlayerData data)
+        public PlayerBehaviour(PlayerContext context, PlayerData data)
         {
+            this._context = context;
             this._data = data;
+
+            this._context.Receiver.OnKeyframeReachedEvent += OnKeyframeReached;
+            this._context.Damageable.OnAlivedEvent += OnAlived;
+            this._context.Damageable.OnDeadEvent += OnDead;
+
+            OnAlived(); // 최초에 강제 호출
+        }
+
+        private void OnKeyframeReached(int index)
+        {
+            if (TargetDamageable != null)
+            {
+                TargetDamageable.CurrentHealth -= _data.AttackDamage;
+            }
         }
 
         public void OnAlived()
@@ -88,13 +87,13 @@ namespace MGFramework
             {
                 if (TargetDamageable == null)
                 {
-                    Vector3 middlePoint = _data._Transform.position;
-                    int overlapCount = Physics.OverlapSphereNonAlloc(middlePoint, minAttackRange, overlapCollider);
+                    Vector3 middlePoint = _data.Transform.position;
+                    int overlapCount = Physics.OverlapSphereNonAlloc(middlePoint, _data.AttackRange.x, overlapCollider);
                     for (int i = 0; i < overlapCount; i++)
                     {
                         Collider collider = overlapCollider[i];
                         if (collider.TryGetComponent(out Damageable damageable) == true &&
-                            damageable.transform != _data._Transform &&
+                            damageable.transform != _data.Transform &&
                             damageable.IsDead == false)
                         {
                             TargetDamageable = damageable;
@@ -102,26 +101,18 @@ namespace MGFramework
                     }
                 }
                 else if (TargetDamageable.IsDead == true ||
-                         TargetDamageable.DistanceWithPlayer() > maxAttackRange)
+                         TargetDamageable.DistanceWithPlayer() > _data.AttackRange.y)
                 {
                     TargetDamageable = null;
                 }
 
-                await UniTask.WaitForSeconds(slowTickRate);
+                await UniTask.WaitForSeconds(_data.SlowTickRate);
             }
         }
 
         public void OnDead()
         {
             isAlived = false;
-        }
-
-        public void OnAttacked()
-        {
-            if (TargetDamageable != null)
-            {
-                TargetDamageable.CurrentHealth -= attackDamage;
-            }
         }
     }
 }

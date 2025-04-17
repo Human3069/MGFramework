@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolable:
     type: 100
-    prefab: {fileID: 297239726990079096, guid: 18b696470dfbe60468d56bd9a485c731, type: 3}
+    prefab: {fileID: 8940859147447281692, guid: 8fdd8b69bdf523642ae81b5fdaf8a473,
+      type: 3}
     initCount: 30
     maxCount: 50

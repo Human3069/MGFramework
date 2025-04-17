@@ -8,59 +8,14 @@ namespace MGFramework
     public class Player : MonoSingleton<Player>
     {
         [SerializeField]
-        private KeyframeReceiver receiver;
-        [SerializeField]
-        private Damageable damageable;
-        [SerializeField]
         private PlayerData data;
-
-        [Space(10)]
-        [SerializeField]
-        private PlayerMovement _movement;
-        [SerializeField]
-        private PlayerBehaviour _behaviour;
-        [SerializeField]
-        private PlayerAnimator _animator;
-        [SerializeField]
-        private PlayerCamera _camera;
+        private PlayerContext context;
 
         private void Awake()
         {
-            damageable.OnAlivedEvent += OnAlived;
-            damageable.OnDamagedEvent += OnDamaged;
-            damageable.OnDeadEvent += OnDead;
+            context = new PlayerContext(data);
 
-            data.Initialize(_movement, _behaviour, _animator, _camera);
-
-            _movement.OnAwake(data);
-            _behaviour.OnAwake(data);
-            _animator.OnAwake(data);
-            _camera.OnAwake(data);
-
-            receiver.OnKeyframeReachedEvent += OnKeyframeReached;
-
-            OnAlived(); // 강제 호출
             AwakeAsync().Forget();
-        }
-
-        private void OnKeyframeReached(int index)
-        {
-            _behaviour.OnAttacked();
-        }
-
-        private void OnAlived()
-        {
-            _behaviour.OnAlived();
-        }
-
-        private void OnDamaged()
-        {
-            
-        }
-
-        private void OnDead()
-        {
-            _behaviour.OnDead();
         }
 
         private async UniTaskVoid AwakeAsync()
@@ -75,27 +30,27 @@ namespace MGFramework
 
         private void OnInpuDown()
         {
-            _movement.OnInputDown();
-            _animator.OnInputDown();
+            context.Movement.OnInputDown();
+            context.Animator.OnInputDown();
         }
 
         private void OnInput(Vector2 input)
         {
-            _movement.OnInput(input);
-            _animator.OnInput(input);
+            context.Movement.OnInput(input);
+            context.Animator.OnInput(input);
         }
 
         private void OnInputUp()
         {
-            _movement.OnInputUp();
-            _animator.OnInputUp();
+            context.Movement.OnInputUp();
+            context.Animator.OnInputUp();
         }
 
         private void Update()
         {
-            _movement.Tick();
-            _animator.Tick();
-            _camera.Tick();
+            context.Movement.Tick();
+            context.Animator.Tick();
+            context.Camera.Tick();
         }
     }
 }

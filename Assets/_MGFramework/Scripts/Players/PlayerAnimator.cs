@@ -1,42 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MGFramework
 {
-    [System.Serializable]
     public class PlayerAnimator
     {
+        private PlayerContext _context;
         private PlayerData _data;
-
-        [SerializeField]
-        private Animator animator;
-        [SerializeField]
-        private float normalLerpPower = 5f;
 
         private float currentNormal = 0f;
         private bool isInput = false;
 
-        public void OnAwake(PlayerData data)
+        public PlayerAnimator(PlayerContext context, PlayerData data)
         {
+            this._context = context;
             this._data = data;
-            this._data.Behaviour.OnTargetChanged += OnTargetChanged;
+
+            this._context.Behaviour.OnTargetChanged += OnTargetChanged;
         }
 
         private void OnTargetChanged(Damageable damageable)
         {
-            animator.SetBool("IsAttack", damageable != null);
-            animator.SetTrigger("IsAttackStateChanged");
+            _context.Anime.SetBool("IsAttack", damageable != null);
+            _context.Anime.SetTrigger("IsAttackStateChanged");
         }
 
         public void Tick()
         {
             if (isInput == false)
             {
-                currentNormal = Mathf.Lerp(currentNormal, 0f, normalLerpPower * Time.deltaTime);
+                currentNormal = Mathf.Lerp(currentNormal, 0f, _data.NormalLerpPower * Time.deltaTime);
             }
 
-            animator.SetFloat("SpeedNormal", currentNormal);
+            _context.Anime.SetFloat("SpeedNormal", currentNormal);
         }
 
         public void OnInputDown()
@@ -47,7 +42,7 @@ namespace MGFramework
         public void OnInput(Vector3 input)
         {
             float inputNormal = input.magnitude;
-            currentNormal = Mathf.Lerp(currentNormal, inputNormal, normalLerpPower * Time.deltaTime);
+            currentNormal = Mathf.Lerp(currentNormal, inputNormal, _data.NormalLerpPower * Time.deltaTime);
         }
 
         public void OnInputUp()

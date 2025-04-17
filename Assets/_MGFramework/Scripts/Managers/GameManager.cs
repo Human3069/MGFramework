@@ -1,47 +1,57 @@
 using _KMH_Framework;
 using _KMH_Framework.Pool;
-using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace MGFramework
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoSingleton<GameManager>
     {
-        private Inventory playerInventory;
-        private Inventory employeeInventory;
+        public CustomerWaitingLine WaitingLine;
+
+        [Space(10)]
+        public Transform CustomerEnablePoint;
+        public Transform CustomerReturnPoint;
+
+        [Space(10)]
+        [SerializeField]
+        private float returnInterval = 1f;
+        [SerializeField]
+        private float returnRadius = 10f;
+
+        private Collider[] overlapColliders = new Collider[10];
 
         private void Awake()
         {
-            playerInventory = Player.Instance.GetComponent<Inventory>();
-            employeeInventory = Object.FindObjectOfType<Employee>().GetComponent<Inventory>();
+            CheckReturnCustomerAsync().Forget();
         }
 
-#if UNITY_EDITOR
-        private void Update()
+        private async UniTaskVoid CheckReturnCustomerAsync()
         {
-            if (Input.GetKeyDown(KeyCode.Insert))
+            while (this.enabled == true)
             {
-                Time.timeScale += 1f;
-            }
-            else if (Input.GetKeyDown(KeyCode.Delete))
-            {
-                Time.timeScale = 1f;
-            }
+                int overlapCount = Physics.OverlapSphereNonAlloc(CustomerReturnPoint.position, returnRadius, overlapColliders);
+                for (int i = 0; i < overlapCount; i++)
+                {
+                    Collider overlapCollider = overlapColliders[i];
+                    if (overlapCollider.TryGetComponent(out Customer customer) == true &&
+                        customer.IsExiting() == true)
+                    {
+                        customer.gameObject.DisablePool(PoolType.Customer);
+                    }
+                }
 
-            else if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                playerInventory.Push(PoolType.Stackable_RawMeat);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                playerInventory.Push(PoolType.Stackable_Wood);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                employeeInventory.Push(PoolType.Stackable_CookedMeat);
+                await UniTask.WaitForSeconds(returnInterval);
             }
         }
-#endif
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(CustomerEnablePoint.position, 1f);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(CustomerReturnPoint.position, returnRadius);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using _KMH_Framework;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace MGFramework
 {
@@ -36,7 +37,11 @@ namespace MGFramework
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0) == true)
+            bool isHovered = EventSystem.current.IsPointerOverGameObject();
+            bool isClicked = Input.GetMouseButtonDown(0) == true;
+
+            if (isHovered == false &&
+                isClicked == true)
             {
                 OnClickDownAsync().Forget();
             }

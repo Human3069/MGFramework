@@ -6,11 +6,13 @@ namespace MGFramework
 {
     public class FindWorkEmployeeState : IEmployeeState
     {
-        private Employee _employee;
+        private EmployeeContext _context;
+        private EmployeeData _data;
 
-        public void Enter(Employee employee)
+        public void Enter(EmployeeContext context, EmployeeData data)
         {
-            this._employee = employee;
+            this._context = context;
+            this._data = data;
         }
 
         public void Exit()
@@ -18,21 +20,11 @@ namespace MGFramework
 
         }
 
-        public void Tick()
-        {
-
-        }
-
-        public void FixedTick()
-        {
-      
-        }
-
         public void SlowTick()
         {
-            if (_employee.TargetHarvestable == null)
+            if (_context.TargetHarvestable == null)
             {
-                _employee.TargetHarvestable = _employee.FindNearest<Harvestable>(FindNearestPredicate);
+                _context.TargetHarvestable = _context.Transform.FindNearest<Harvestable>(FindNearestPredicate);
                 bool FindNearestPredicate(Harvestable harvestable)
                 {
                     return harvestable._Damageable.IsEntered == false &&
@@ -41,7 +33,7 @@ namespace MGFramework
             }
             else
             {
-                _employee.State = EmployeeState.MoveToWork;
+                _context.StateMachine.ChangeState(new MoveToWorkEmployeeState());
             }
         }
     }

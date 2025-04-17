@@ -1,119 +1,62 @@
-using _KMH_Framework;
-using _KMH_Framework.Pool;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace MGFramework
 {
-    public enum EmployeeState
-    {
-        None = -1,
-
-        FindWork,
-        MoveToWork,
-        Work,
-        PickUpItems,
-        FindStorage,
-        MoveToStorage,
-        StoreItems,
-    }
-
     public class Employee : MonoBehaviour
     {
+        [SerializeField]
+        private EmployeeData data;
+        private EmployeeContext context;
         private EmployeeStateMachine stateMachine;
-        private NavMeshAgent agent;
-        private Inventory inventory;
 
-        [SerializeField]
-        private KeyframeReceiver receiver;
-        [SerializeField]
-        private Animator animator;
-    
-        [Space(10)]
-        [SerializeField]
-        private float attackDamage = 10f;
-        public float AttackRange = 1f;
-
-        [Space(10)]
-        [ReadOnly]
-        [SerializeField]
-        private EmployeeState _state = EmployeeState.None;
-        public EmployeeState State
+        private bool _isMoving = false;
+        public bool IsMoving
         {
             get
             {
-                return _state;
+                return _isMoving;
             }
-            set
+            private set
             {
-                if (_state != value)
+                if (_isMoving != value)
                 {
-                    _state = value;
-
-                    IEmployeeState state = value.GetState();
-                    stateMachine.ChangeState(state);
+                    _isMoving = value;
+                    context.AnimationController.PlayMove(value);
                 }
             }
         }
 
-        [Space(10)]
-        [ReadOnly]
-        public Harvestable TargetHarvestable = null;
-        [ReadOnly]
-        public Payload TargetPayload = null;
-
         private void Awake()
         {
-            stateMachine = new EmployeeStateMachine(this);
-            agent = this.GetComponent<NavMeshAgent>();
-            inventory = this.GetComponent<Inventory>();
+            context = new EmployeeContext(this);
+            stateMachine = new EmployeeStateMachine(context, data);
+            context.Initialize(stateMachine);
 
-            receiver.OnKeyframeReachedEvent += OnKeyframeReached;
+            context.Receiver.OnKeyframeReachedEvent += OnKeyframeReached;
         }
 
         private void OnKeyframeReached(int index)
         {
-            if (TargetHarvestable != null)
+            if (context.TargetHarvestable != null)
             {
-                TargetHarvestable._Damageable.CurrentHealth -= attackDamage;
+                context.TargetHarvestable._Damageable.CurrentHealth -= data.AttackDamage;
             }
         }
 
         private void OnEnable()
         {
-            State = EmployeeState.FindWork;
-        }
-
-        private void Update()
-        {
-            stateMachine.Tick();
+            context.StateMachine.ChangeState(new FindWorkEmployeeState());
         }
 
         private void FixedUpdate()
         {
-            stateMachine.FixedTick();
+            IsMoving = context.Agent.IsArrived() == false;
         }
 
-        public float GetStoppingDistance()
+        [ContextMenu("Log Current State")]
+        public void LogCurrentState()
         {
-            return agent.stoppingDistance;
-        }
-
-        public List<PoolType> GetPoolTypeList()
-        {
-            return inventory.GetPoolTypeList();
-        }
-
-        public void SetDestination(Vector3 destination)
-        {
-            agent.SetDestination(destination);
-        }
-
-        public void PlayWorkingAnimation(bool isOn)
-        {
-            animator.SetBool("IsStartMining", isOn);
-            animator.SetTrigger("IsStartMiningStateChanged");
+            context.StateMachine.LogCurrentState();
         }
     }
 }

@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MGFramework
 {
     public class MoveToWorkEmployeeState : IEmployeeState
     {
-        private Employee _employee;
+        private EmployeeContext _context;
+        private EmployeeData _data;
 
         private Vector3 destination;
 
-        public void Enter(Employee employee)
+        public void Enter(EmployeeContext context, EmployeeData data)
         {
-            this._employee = employee;
+            this._context = context;
+            this._data = data;
 
-            Damageable targetDamageable = _employee.TargetHarvestable._Damageable;
-            destination = targetDamageable.GetClosestPoint(_employee.transform.position);
-            _employee.SetDestination(destination);
+            Damageable targetDamageable = _context.TargetHarvestable._Damageable;
+            destination = targetDamageable.GetClosestPoint(_context.Transform.position);
+            
+            _context.Agent.SetDestination(destination);
         }
 
         public void Exit()
@@ -24,22 +25,11 @@ namespace MGFramework
 
         }
 
-        public void Tick()
-        {
-
-        }
-
-        public void FixedTick()
-        {
-      
-        }
-
         public void SlowTick()
         {
-            float distance = Vector3.Distance(_employee.transform.position, destination);
-            if (distance <= _employee.AttackRange)
+            if (_context.IsInAttackRange(_data, destination) == true)
             {
-                _employee.State = EmployeeState.Work;
+                _context.StateMachine.ChangeState(new WorkEmployeeState());
             }
         }
     }

@@ -175,5 +175,10 @@ namespace MGFramework
         {
             return stackableList.Count >= payCount;
         }
+
+        public bool HasOutput()
+        {
+            return stackableList.Count > 0;
+        }
     }
 }

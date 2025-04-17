@@ -7,30 +7,51 @@ namespace MGFramework
     public class PickUpItemsEmployeeState : IEmployeeState
     {
         private const float PICKUP_DISTANCE = 10f;
-        private Employee _employee;
 
-        private List<Item> targetItemList = new List<Item>();
+        private EmployeeContext _context;
+        private EmployeeData _data;
 
-        public void Enter(Employee employee)
+        private List<Item> targetItemList;
+    
+        public void Enter(EmployeeContext context, EmployeeData data)
         {
-            this._employee = employee;
+            this._context = context;
+            this._data = data;
 
-            Collider[] overlapColliders = Physics.OverlapSphere(_employee.transform.position, PICKUP_DISTANCE);
+            // 주변 아이템이 없다면 FindWork 상태 전이
+            bool isFoundNearItems = TryFindNearItemList(out targetItemList);
+            if (isFoundNearItems == false)
+            {
+                _context.StateMachine.ChangeState(new FindWorkEmployeeState());
+            }
+        }
+
+        /// <summary>
+        /// PICKUP_DISTANCE 반경 내 아이템 컴포넌트들을 찾아 필드에 저장.
+        /// </summary>
+        /// <returns>근처에 아이템이 없으면 false, 하나 이상 있으면 true</returns>
+        private bool TryFindNearItemList(out List<Item> itemList)
+        {
+            Collider[] overlapColliders = Physics.OverlapSphere(_context.Transform.position, PICKUP_DISTANCE);
+            itemList = new List<Item>();
+
             foreach (Collider overlapCollider in overlapColliders)
             {
                 if (overlapCollider.TryGetComponent(out Item item) == true)
                 {
-                    targetItemList.Add(item);
+                    itemList.Add(item);
                 }
             }
 
-            targetItemList.Sort(SortComparison);
+            itemList.Sort(SortComparison);
             int SortComparison(Item a, Item b)
             {
-                float distanceA = Vector3.Distance(_employee.transform.position, a.transform.position);
-                float distanceB = Vector3.Distance(_employee.transform.position, b.transform.position);
+                float distanceA = Vector3.Distance(_context.Transform.position, a.transform.position);
+                float distanceB = Vector3.Distance(_context.Transform.position, b.transform.position);
                 return distanceA.CompareTo(distanceB);
             }
+
+            return itemList.Count > 0;
         }
 
         public void Exit()
@@ -38,31 +59,18 @@ namespace MGFramework
 
         }
 
-        public void Tick()
-        {
-
-        }
-
-        public void FixedTick()
-        {
-      
-        }
-
         public void SlowTick()
         {
             if (targetItemList.Count == 0)
             {
-                _employee.State = EmployeeState.FindStorage;
+                _context.StateMachine.ChangeState(new FindInputStorageEmployeeState());
             }
             else
             {
                 Item targetItem = targetItemList[0];
-                _employee.SetDestination(targetItem.transform.position);
+                _context.Agent.SetDestination(targetItem.transform.position);
 
-                float distance = Vector3.Distance(_employee.transform.position, targetItem.transform.position);
-                float stoppingDistance = _employee.GetStoppingDistance();
-
-                if (distance <= stoppingDistance ||
+                if (_context.Agent.IsArrived() == true ||
                     targetItem.gameObject.activeSelf == false)
                 {
                     targetItemList.Remove(targetItem);

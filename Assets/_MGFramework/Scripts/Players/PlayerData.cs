@@ -3,25 +3,24 @@ using UnityEngine;
 namespace MGFramework
 {
     [System.Serializable]
-    public class PlayerData
+    public class PlayerData 
     {
-        [HideInInspector]
-        public PlayerMovement Movement;
-        [HideInInspector]
-        public PlayerBehaviour Behaviour;
-        [HideInInspector]
-        public PlayerAnimator Animator;
-        [HideInInspector]
-        public PlayerCamera Camera;
+        [Header("Serialized Components")]
+        public Transform Transform;
+        public Camera Camera;
 
-        public Transform _Transform;
+        [Header("Movement Value Datas")]
+        public float MoveSpeed = 3f;
+        public float MoveLerpPower = 7.5f;
+        public float LookSpeed = 500f;
 
-        public void Initialize(PlayerMovement movement, PlayerBehaviour behaviour, PlayerAnimator animator, PlayerCamera camera)
-        {
-            this.Movement = movement;
-            this.Behaviour = behaviour;
-            this.Animator = animator;
-            this.Camera = camera;
-        }
+        [Header("Behaviour Value Datas")]
+        public float SlowTickRate = 0.2f;
+        [MinMaxSlider(0f, 2f)]
+        public Vector2 AttackRange = new Vector2(1f, 1.25f); //min => start attack, max => attackable range
+        public float AttackDamage = 30f;
+
+        [Header("Animator Value Datas")]
+        public float NormalLerpPower = 5f;
     }
 }

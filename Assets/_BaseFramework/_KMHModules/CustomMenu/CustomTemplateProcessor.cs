@@ -6,7 +6,6 @@ public class CustomTemplateProcessor : UnityEditor.AssetModificationProcessor
     private static void OnWillCreateAsset(string assetName)
     {
         assetName = assetName.Replace(".meta", "");
-
         if (System.IO.Path.GetExtension(assetName) != ".cs")
         {
             return;
@@ -14,11 +13,10 @@ public class CustomTemplateProcessor : UnityEditor.AssetModificationProcessor
 
         int index = Application.dataPath.LastIndexOf("Assets");
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.Append(Application.dataPath.Substring(0, index)).Append(assetName);
+        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+        stringBuilder.Append(Application.dataPath.Substring(0, index)).Append(assetName);
 
-        string path = sb.ToString();
-
+        string path = stringBuilder.ToString();
         if (System.IO.File.Exists(path) == false)
         {
             return;

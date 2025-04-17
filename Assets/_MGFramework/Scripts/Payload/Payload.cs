@@ -38,6 +38,54 @@ namespace MGFramework
             }
         }
 
+        public Vector3 GetClosestInputStorePoint(Vector3 originPoint)
+        {
+            Vector3 nearestPoint = Vector3.zero;
+            float nearestDistance = float.MaxValue;
+
+            foreach (InputStackableStore store in inputStores)
+            {
+                float distance = Vector3.Distance(originPoint, store.GetClosestPoint(originPoint));
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestPoint = store.GetClosestPoint(originPoint);
+                }
+            }
+
+            if (nearestPoint == Vector3.zero)
+            {
+                Debug.Assert(false);
+                return Vector3.zero;
+            }
+
+            return nearestPoint;
+        }
+
+        public Vector3 GetClosestOutputStorePoint(Vector3 originPoint)
+        {
+            Vector3 nearestPoint = Vector3.zero;
+            float nearestDistance = float.MaxValue;
+
+            foreach (OutputStackableStore store in outputStores)
+            {
+                float distance = Vector3.Distance(originPoint, store.GetClosestPoint(originPoint));
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestPoint = store.GetClosestPoint(originPoint);
+                }
+            }
+
+            if (nearestPoint == Vector3.zero)
+            {
+                Debug.Assert(false);
+                return Vector3.zero;
+            }
+
+            return nearestPoint;
+        }
+
         public List<PoolType> GetEnterablePoolTypeList(List<PoolType> poolTypeList)
         {
             List<PoolType> includePoolTypeList = new List<PoolType>();
@@ -59,36 +107,17 @@ namespace MGFramework
             return enterablePoolTypeList.Count > 0;
         }
 
-        public Vector3 GetClosestPoint(Vector3 originPoint)
+        public bool HasOutputStore()
         {
-            float nearestDistance = float.MaxValue;
-            Vector3 nearestPoint = Vector3.zero;
-
-            foreach (InputStackableStore inputStore in inputStores)
-            {
-                Vector3 point = inputStore.GetClosestPoint(originPoint);
-
-                float distance = Vector3.Distance(originPoint, point);
-                if (distance < nearestDistance)
-                {
-                    nearestDistance = distance;
-                    nearestPoint = point;
-                }
-            }
-
             foreach (OutputStackableStore outputStore in outputStores)
             {
-                Vector3 point = outputStore.GetClosestPoint(originPoint);
-
-                float distance = Vector3.Distance(originPoint, point);
-                if (distance < nearestDistance)
+                if (outputStore.HasOutput() == true)
                 {
-                    nearestDistance = distance;
-                    nearestPoint = point;
+                    return true; 
                 }
             }
 
-            return nearestPoint;
+            return false;
         }
 
         private void Awake()

@@ -1,27 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MGFramework
 {
-    [System.Serializable]
     public class PlayerCamera 
     {
+        private PlayerContext _context;
         private PlayerData _data;
 
-        [SerializeField]
-        private Camera camera;
-
-        public void OnAwake(PlayerData data)
+        public PlayerCamera(PlayerContext context, PlayerData data)
         {
+            this._context = context;
             this._data = data;
         }
 
         public void Tick()
         {
-            Vector3 playerPosition = _data._Transform.position;
-            Vector3 camDirection = camera.transform.forward;
-            camera.transform.position = playerPosition - camDirection * 100f;
+            Vector3 playerPosition = _data.Transform.position;
+            Vector3 camDirection = _data.Camera.transform.forward;
+            _data.Camera.transform.position = playerPosition - camDirection * 100f;
         }
     }
 }

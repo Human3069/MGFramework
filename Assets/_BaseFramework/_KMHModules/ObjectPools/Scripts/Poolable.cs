@@ -16,6 +16,7 @@ namespace _KMH_Framework.Pool
         Stackable_CookedMeat = 52,
 
         Customer = 100,
+        Employee = 101,
 
         PlayerMarker = 200,
 

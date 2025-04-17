@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d90f45fec32f3d449ae24047f0c5724, type: 3}
+  m_Name: EmployeeSO
+  m_EditorClassIdentifier: 
+  poolable:
+    type: 101
+    prefab: {fileID: 2468419097679648978, guid: 6c39fe6c531969f48895c7a08aa68aca,
+      type: 3}
+    initCount: 30
+    maxCount: 50
