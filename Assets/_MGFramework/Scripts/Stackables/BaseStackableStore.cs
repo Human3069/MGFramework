@@ -33,6 +33,7 @@ namespace MGFramework
         [SerializeField]
         protected List<Stackable> stackableList = new List<Stackable>();
 
+        private List<Inventory> enteringInventoryList = new List<Inventory>();
         private Inventory _enteredInventory;
         protected Inventory EnteredInventory
         {
@@ -64,19 +65,26 @@ namespace MGFramework
 
         protected void OnTriggerEnter(Collider collider)
         {
-            if (collider.TryGetComponent(out Inventory inventory) == true &&
-                EnteredInventory == null)
+            if (collider.TryGetComponent(out Inventory inventory) == true)
             {
-                EnteredInventory = inventory;
+                enteringInventoryList.Add(inventory);
+                EnteredInventory = enteringInventoryList[0];
             }
         }
 
         protected void OnTriggerExit(Collider collider)
         {
-            if (collider.TryGetComponent(out Inventory inventory) == true &&
-                EnteredInventory == inventory)
+            if (collider.TryGetComponent(out Inventory inventory) == true)
             {
-                EnteredInventory = null;
+                enteringInventoryList.Remove(inventory);
+                if (enteringInventoryList.Count == 0)
+                {
+                    EnteredInventory = null;
+                }
+                else
+                {
+                    EnteredInventory = enteringInventoryList[0];
+                }
             }
         }
 
@@ -163,12 +171,35 @@ namespace MGFramework
         /// <summary>
         /// Pop이 가능할 경우 true를 반환합니다.
         /// </summary>
+        /// <param name="type">같은 타입인지 체크</param>
+        /// <param name="stackables">팝된 컴포넌트들을 리턴합니다.</param>
+        /// <returns>팝 결과를 리턴합니다 : 같은 타입이며, 팝 가능한 상태일 때 true, 그 외에 false</returns>
+        public bool TryPop(PoolType type, out Stackable[] stackables)
+        {
+            bool isPoppable = IsPoppable(type);
+            stackables = isPoppable ? Pop() : null;
+
+            return isPoppable;
+        }
+
+        /// <summary>
+        /// Pop이 가능할 경우 true를 반환합니다.
+        /// </summary>
         public bool TryPop(out Stackable[] stackables)
         {
             bool isPoppable = IsPoppable();
             stackables = isPoppable ? Pop() : null;
 
             return isPoppable;
+        }
+
+        public bool IsPoppable(PoolType type)
+        {
+            bool isPoppable = IsPoppable();
+            bool isTypePoppable = poolType == type;
+
+            return isPoppable == true &&
+                   isTypePoppable == true;
         }
 
         public bool IsPoppable()

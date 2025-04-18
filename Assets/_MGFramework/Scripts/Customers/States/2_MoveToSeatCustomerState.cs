@@ -1,3 +1,4 @@
+using UnityEngine;
 
 namespace MGFramework
 {
@@ -10,6 +11,8 @@ namespace MGFramework
         {
             this._context = context;
             this._data = data;
+
+            _context.Agent.SetDestination(_context.OccupiedSeat.transform.position);
         }
 
         public void Exit()
@@ -24,7 +27,11 @@ namespace MGFramework
 
         public void SlowTick()
         {
-        
+            bool isArrived = _context.Agent.IsArrived();
+            if (isArrived == true)
+            {
+                _context.StateMachine.ChangeState(new EatCustomerState());
+            }
         }
     }
 }

@@ -1,3 +1,6 @@
+using _KMH_Framework.Pool;
+using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MGFramework
@@ -7,20 +10,30 @@ namespace MGFramework
         private CustomerContext _context;
         private CustomerData _data;
 
-        private int desiredFoodCount;
+        // randomized values
+        private Dictionary<PoolType, int> requirementDic;
+
+        private CustomerWaitingLine waitingLine;
+        private bool isFirstCustomer;
 
         public void Enter(CustomerContext context, CustomerData data)
         {
             this._context = context;
             this._data = data;
 
-            Vector2Int countRange = _data.DesiredFoodCountRange;
-            desiredFoodCount = Random.Range(countRange.x, countRange.y + 1);
+            requirementDic = new Dictionary<PoolType, int>();
+            foreach (KeyValuePair<PoolType, Vector2Int> pair in _data.RequirementDic)
+            {
+                int randomCount = Random.Range(pair.Value.x, pair.Value.y + 1);
+                requirementDic.Add(pair.Key, randomCount);
+            }
+
+            waitingLine = GameManager.Instance.WaitingLine;
         }
 
         public void Exit()
-        {   
-
+        {
+            
         }
 
         public void FixedTick()
@@ -38,7 +51,41 @@ namespace MGFramework
 
         public void SlowTick()
         {
-        
+            if (waitingLine.IsFirstCustomer(_context.Customer) == true &&
+                _context.Agent.IsArrived() == true &&
+                _context.IsCustomerInitialized == true &&
+                isFirstCustomer == false)
+            {
+                isFirstCustomer = true;
+                OnBecomeFirstCustomerAsync().Forget();
+            }
+        }
+
+        private async UniTaskVoid OnBecomeFirstCustomerAsync()
+        {
+            int desiredFoodCount = 0;
+            foreach (KeyValuePair<PoolType, int> pair in requirementDic)
+            {
+                desiredFoodCount += pair.Value;
+            }
+
+            Debug.Log(desiredFoodCount);
+
+            while (desiredFoodCount != 0)
+            {
+                foreach (KeyValuePair<PoolType, int> pair in requirementDic)
+                {
+                    Payload counterPayload = waitingLine.CounterPayload;
+                    if (counterPayload.TryPopInputStore(pair.Key) == true)
+                    {
+                        desiredFoodCount--;
+                    }
+                }
+
+                await UniTask.WaitForSeconds(_data.FoodConsumeSpeed);
+            }
+
+            _context.StateMachine.ChangeState(new FindSeatCustomerState());
         }
     }
 }

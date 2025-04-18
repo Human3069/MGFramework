@@ -6,6 +6,11 @@ namespace MGFramework
     {
         public static bool IsArrived(this NavMeshAgent agent)
         {
+            if (agent == null || agent.isOnNavMesh == false)
+            {
+                return false;
+            }
+
             bool isWithinDistance = agent.remainingDistance <= agent.stoppingDistance;
             bool isPathPending = agent.pathPending;
 

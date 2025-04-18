@@ -1,6 +1,7 @@
 using _KMH_Framework;
 using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace MGFramework
@@ -45,13 +46,23 @@ namespace MGFramework
             }
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            if (CustomerEnablePoint == null || CustomerReturnPoint == null)
+            {
+                Debug.Log(CustomerEnablePoint == null || CustomerReturnPoint == null);
+                // DestroyImmediate(this.gameObject);
+
+                Selection.objects = new Object[] { this.gameObject };
+            }
+            
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(CustomerEnablePoint.position, 1f);
 
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(CustomerReturnPoint.position, returnRadius);
         }
+#endif
     }
 }

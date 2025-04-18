@@ -1,13 +1,20 @@
 using _KMH_Framework;
 using _KMH_Framework.Pool;
+using AYellowpaper.SerializedCollections;
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace MGFramework
 {
+    /// <summary>
+    /// ~ 키를 눌러서 CheatConsole를 열어 cheatCommand를 입력하여 Cheat를 사용할 수 있습니다. 혹은 binding된 키를 눌러서 사용할 수 있습니다.
+    /// </summary>
     public class CheatController : MonoSingleton<CheatController>
     {
-        private Dictionary<string, System.Action> CHEAT_COMMAND_LIST;
+        [SerializeField, SerializedDictionary("KeyCode", "Command")]
+        private SerializedDictionary<KeyCode, string> bindedCommandDic = new SerializedDictionary<KeyCode, string>();
 
         private Inventory playerInventory;
         private Inventory employeeInventory;
@@ -32,24 +39,13 @@ namespace MGFramework
         public delegate void CheatConsoleDelegate(bool isOn);
         public event CheatConsoleDelegate OnCheatConsoleStateChanged;
 
+        public delegate void SubmitCheatCommandDelegate(string command);
+        public event SubmitCheatCommandDelegate OnSubmitCheatCommand;
+
         private void Awake()
         {
             playerInventory = Player.Instance.GetComponent<Inventory>();
-            employeeInventory = Object.FindObjectOfType<Employee>().GetComponent<Inventory>();
-
-            CHEAT_COMMAND_LIST = new Dictionary<string, System.Action>()
-            {
-                {"give_player_50", () => GiveItem(playerInventory, PoolType.Stackable_Wood) },
-                {"give_player_51", () => GiveItem(playerInventory, PoolType.Stackable_RawMeat) },
-                {"give_player_52", () => GiveItem(playerInventory, PoolType.Stackable_CookedMeat) },
-
-                {"give_employee_50", () => GiveItem(employeeInventory, PoolType.Stackable_Wood) },
-                {"give_employee_51", () => GiveItem(employeeInventory, PoolType.Stackable_RawMeat) },
-                {"give_employee_52", () => GiveItem(employeeInventory, PoolType.Stackable_CookedMeat) },
-
-                {"enqueue_customer", EnqueueCustomer },
-                {"dequeue_customer", DequeueCustomer }
-            };
+            employeeInventory = FindObjectOfType<Employee>().GetComponent<Inventory>();
         }
 
         private void Update()
@@ -67,20 +63,115 @@ namespace MGFramework
             {
                 Time.timeScale = 1f;
             }
+
+            foreach (KeyValuePair<KeyCode, string> pair in bindedCommandDic)
+            {
+                if (Input.GetKeyDown(pair.Key) == true)
+                {
+                    if (TrySubmit(pair.Value) == true)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Debug.LogError("Cheat command not found : " + pair.Value);
+                    }
+                }
+            }
         }
 
         public bool TrySubmit(string inputText)
         {
-            if (CHEAT_COMMAND_LIST.ContainsKey(inputText) == true)
+            Regex singlePatternRegex = new Regex(@"^give_([a-zA-Z0-9]+)_([0-9]+)$");
+            Regex multiplePatternRegex = new Regex(@"^give_([a-zA-Z0-9]+)_([0-9]+)_([0-9]+)$");
+
+            Match singlesMatch = singlePatternRegex.Match(inputText);
+            Match multiplesMatch = multiplePatternRegex.Match(inputText);
+
+            if (multiplesMatch.Success == true)
             {
-                CHEAT_COMMAND_LIST[inputText].Invoke();
+                string gaveTarget = multiplesMatch.Groups[1].Value;
+                int gaveType = int.Parse(multiplesMatch.Groups[2].Value);
+                uint gaveCount = uint.Parse(multiplesMatch.Groups[3].Value);
+
+                return TryIntermediator(gaveTarget, gaveType, gaveCount);
+            }
+            else if (singlesMatch.Success == true)
+            {
+                string gaveTarget = singlesMatch.Groups[1].Value;
+                int gaveType = int.Parse(singlesMatch.Groups[2].Value);
+
+                return TryIntermediator(gaveTarget, gaveType, 1);
+            }
+            else if (inputText.Equals("enqueue_customer") == true)
+            {
+                EnqueueCustomer();
+                return true;
+            }
+            else if (inputText.Equals("dequeue_customer") == true)
+            {
+                DequeueCustomer();
                 return true;
             }
             else
             {
-                Debug.LogError("Cheat command not found : " + inputText);
+                Debug.LogError("잘못된 Command입니다 : " + inputText);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Regex로 부터 넘겨받은 값을 처리합니다.
+        /// </summary>
+        /// <param name="gaveTarget">player 혹은 employee 판별</param>
+        /// <param name="gaveType">아이템 타입</param>
+        /// <param name="gaveCount">아이템 갯수</param>
+        private bool TryIntermediator(string gaveTarget, int gaveType, uint gaveCount)
+        {
+            Inventory gaveInventory = null;
+            if (gaveTarget.Equals("player") == true)
+            {
+                gaveInventory = playerInventory;
+            }
+            else if (gaveTarget.Equals("employee") == true)
+            {
+                gaveInventory = employeeInventory;
+            }
+            else
+            {
+                Debug.LogError("잘못된 Target입니다 : " + gaveTarget);
+                return false;
+            }
+
+            PoolType poolType = PoolType.None;
+            if (Enum.IsDefined(typeof(PoolType), gaveType) == true &&
+               ((PoolType)gaveType).GetPoolCategory() == PoolCategory.Stackable)
+            {
+                poolType = (PoolType)gaveType;
+            }
+            else
+            {
+                Debug.LogError("잘못된 PoolType입니다 : " + gaveType);
+                return false;
+            }
+
+            if (gaveCount == 0)
+            {
+                Debug.LogErrorFormat("잘못된 갯수입니다 : " + gaveCount);
+                return false;
+            }
+            else if (gaveCount > 100)
+            {
+                Debug.LogErrorFormat("갯수는 100개를 넘을 수 없습니다 : " + gaveCount);
+                return false;
+            }
+
+            for (int i = 0; i < gaveCount; i++)
+            {
+                GiveItem(gaveInventory, poolType);
+            }
+
+            return true;
         }
 
         public void GiveItem(Inventory inventory, PoolType poolType)
@@ -100,9 +191,9 @@ namespace MGFramework
             PoolType.Customer.EnablePool(OnBeforeEnablePool);
             void OnBeforeEnablePool(GameObject customerObj)
             {
-                Vector3 enablePoint = GameManager.Instance.CustomerEnablePoint.position;
-                customerObj.transform.position = enablePoint;
-                customerObj.transform.rotation = Quaternion.identity;
+                Transform enableTransform = GameManager.Instance.CustomerEnablePoint;
+                customerObj.transform.position = enableTransform.position;
+                customerObj.transform.forward = enableTransform.forward;
 
                 Customer customer = customerObj.GetComponent<Customer>();
                 CustomerWaitingLine waitingLine = GameManager.Instance.WaitingLine;

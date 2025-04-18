@@ -17,10 +17,9 @@ namespace MGFramework
             _animator.SetTrigger("IsMovingStateChanged");
         }
 
-        public void PlaySit(bool isSit)
+        public void DoSit()
         {
-            _animator.SetBool("IsSit", isSit);
-            _animator.SetTrigger("IsSitStateChanged");
+            _animator.SetTrigger("DoSit");
         }
     }
 }

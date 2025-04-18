@@ -6,17 +6,24 @@ namespace MGFramework
     public class CustomerContext
     {
         // Core Components
+        public Customer Customer;
         public CustomerStateMachine StateMachine;
 
         public Transform Transform;
         public NavMeshAgent Agent;
         public CustomerAnimationController AnimationController;
 
+        // Reference Components
+        public CustomerSeat OccupiedSeat;
+
         // Reference Values
         public Vector3 DesiredDirection;
-        
+        public bool IsCustomerInitialized = false;
+
         public CustomerContext(Customer customer)
         {
+            this.Customer = customer;
+
             this.Transform = customer.transform;
             this.Agent = customer.GetComponent<NavMeshAgent>();
 

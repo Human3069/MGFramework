@@ -132,11 +132,11 @@ namespace MGFramework
         {
             // Output을 생성할 수 있는지 체크.
             if (isGeneratingOutput == false &&
-                inputStores.IsAllPoppable() == true &&
+                inputStores.IsEachPoppable() == true &&
                 outputStores.Length > 0)
             {
                 // Output을 생성하기 위한 재료 소모
-                inputStores.PopAll();
+                PopEachInputStore();
 
                 // 생성 비동기 실행
                 GenerateOutputAsync().Forget();
@@ -164,10 +164,44 @@ namespace MGFramework
             isGeneratingOutput = false;
 
             // Output 생성
-            outputStores.AddAll();
+            AddEachOutputStore();
 
             // 재귀호출
             OnPush();
+        }
+
+        public bool TryPopInputStore(PoolType poolType)
+        {
+            foreach (InputStackableStore store in inputStores)
+            {
+                if (store.IsPoppable(poolType) == false)
+                {
+                    return false;
+                }
+            }
+
+            foreach (InputStackableStore store in inputStores)
+            {
+                store.Pop();
+            }
+
+            return true;
+        }
+
+        public void PopEachInputStore()
+        {
+            foreach (InputStackableStore store in inputStores)
+            {
+                store.Pop();
+            }
+        }
+
+        public void AddEachOutputStore()
+        {
+            foreach (OutputStackableStore store in outputStores)
+            {
+                store.Add();
+            }
         }
     }
 }

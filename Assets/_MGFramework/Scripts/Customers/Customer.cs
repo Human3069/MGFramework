@@ -38,11 +38,21 @@ namespace MGFramework
         private void OnEnable()
         {
             context.StateMachine.ChangeState(new WaitCustomerState());
+            context.IsCustomerInitialized = true;
+        }
+
+        private void OnDisable()
+        {
+            context.StateMachine.ChangeState(null);
+            context.IsCustomerInitialized = false;
         }
 
         private void FixedUpdate()
         {
-            IsMoving = context.Agent.IsArrived() == false;
+            if (context.Agent.enabled == true)
+            {
+                IsMoving = context.Agent.IsArrived() == false;
+            }
         }
 
         public async UniTaskVoid UpdatePoseAsync(Vector3 destination, Vector3 direction)

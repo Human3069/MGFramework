@@ -1,3 +1,4 @@
+using UnityEngine;
 
 namespace MGFramework
 {
@@ -24,7 +25,8 @@ namespace MGFramework
 
         public void SlowTick()
         {
-        
+            Vector2 targetPoint = GameManager.Instance.CustomerReturnPoint.position;
+            _context.Agent.destination = targetPoint;
         }
     }
 }

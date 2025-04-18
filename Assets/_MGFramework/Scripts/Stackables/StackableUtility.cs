@@ -6,7 +6,7 @@ namespace MGFramework
 {
     public static class StackableUtility 
     {
-        public static bool IsAllPoppable(this BaseStackableStore[] stores)
+        public static bool IsEachPoppable(this BaseStackableStore[] stores)
         {
             foreach (BaseStackableStore store in stores)
             {
@@ -17,22 +17,6 @@ namespace MGFramework
             }
 
             return true;
-        }
-
-        public static void PopAll(this BaseStackableStore[] stores)
-        {
-            foreach (BaseStackableStore store in stores)
-            {
-                store.Pop();
-            }
-        }
-
-        public static void AddAll(this BaseStackableStore[] stores)
-        {
-            foreach (BaseStackableStore store in stores)
-            {
-                store.Add();
-            }
         }
     }
 }

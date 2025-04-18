@@ -23,6 +23,7 @@ namespace MGFramework
         {
             consolePanelObj.gameObject.SetActive(false);
             CheatController.Instance.OnCheatConsoleStateChanged += OnCheatConsoleStateChanged;
+            CheatController.Instance.OnSubmitCheatCommand += OnSubmitCheatCommand;
 
             inputField.onSubmit.AddListener(OnInputFieldSubmit);
         }
@@ -32,17 +33,19 @@ namespace MGFramework
             string command = inputText.Replace(" ", "");
             if (string.IsNullOrEmpty(command) == false)
             {
-                if (CheatController.Instance.TrySubmit(command) == true)
-                {
-                    DateTime currentDateTime = DateTime.Now;
-                    string currentTimeText = "<size=" + datetimeFontSize + "><color=#BFBFBF>" + " - " + currentDateTime.ToString("HH:mm:ss") + "</color></size>";
-
-                    logText.text += "<size=" + logFontSize + "><b>" + command + "</b></size>" + currentTimeText + "\n";
-                }
+                CheatController.Instance.TrySubmit(command);
             }
 
             inputField.text = string.Empty;
             inputField.ActivateInputField();
+        }
+
+        private void OnSubmitCheatCommand(string command)
+        {
+            DateTime currentDateTime = DateTime.Now;
+            string currentTimeText = "<size=" + datetimeFontSize + "><color=#BFBFBF>" + " - " + currentDateTime.ToString("HH:mm:ss") + "</color></size>";
+
+            logText.text += "<size=" + logFontSize + "><b>" + command + "</b></size>" + currentTimeText + "\n";
         }
 
         private void OnCheatConsoleStateChanged(bool isOn)

@@ -12,8 +12,10 @@ namespace _KMH_Framework
                 if (_instance == null)
                 {
                     T tInstance = FindFirstObjectByType(typeof(T), FindObjectsInactive.Include) as T;
-                    if (tInstance == null)
+                    if (tInstance == null && Application.isPlaying == true)
                     {
+                        Debug.LogWarning("Will Instantiate!!!");
+
                         GameObject newObj = new GameObject(typeof(T).Name);
                         tInstance = newObj.AddComponent<T>();
                     }
