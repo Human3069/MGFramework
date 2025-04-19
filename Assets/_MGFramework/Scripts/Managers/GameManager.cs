@@ -20,6 +20,28 @@ namespace MGFramework
         [SerializeField]
         private float returnRadius = 10f;
 
+        [Space(10)]
+        [ReadOnly]
+        private int _gold = 0;
+        public int Gold
+        {
+            get
+            {
+                return _gold;
+            }
+            set
+            {
+                if (_gold != value)
+                {
+                    _gold = value;
+                    OnGoldChanged?.Invoke(_gold);
+                }
+            }
+        }
+
+        public delegate void GoldChangedDelegate(int gold);
+        public event GoldChangedDelegate OnGoldChanged;
+
         private Collider[] overlapColliders = new Collider[10];
 
         private void Awake()

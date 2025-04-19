@@ -82,13 +82,22 @@ namespace MGFramework
 
         public bool TrySubmit(string inputText)
         {
+            Regex giveGoldPatternRegex = new Regex(@"^give_gold_([0-9]+)$");
             Regex singlePatternRegex = new Regex(@"^give_([a-zA-Z0-9]+)_([0-9]+)$");
             Regex multiplePatternRegex = new Regex(@"^give_([a-zA-Z0-9]+)_([0-9]+)_([0-9]+)$");
-
+        
+            Match giveGoldMatch = giveGoldPatternRegex.Match(inputText);
             Match singlesMatch = singlePatternRegex.Match(inputText);
             Match multiplesMatch = multiplePatternRegex.Match(inputText);
+      
+            if (giveGoldMatch.Success == true)
+            {
+                int gaveAmount = int.Parse(giveGoldMatch.Groups[1].Value);
 
-            if (multiplesMatch.Success == true)
+                GivePlayerGold(gaveAmount);
+                return true;
+            }
+            else if (multiplesMatch.Success == true)
             {
                 string gaveTarget = multiplesMatch.Groups[1].Value;
                 int gaveType = int.Parse(multiplesMatch.Groups[2].Value);
@@ -212,6 +221,11 @@ namespace MGFramework
             {
                 customer.gameObject.DisablePool(PoolType.Customer);
             }
+        }
+
+        public void GivePlayerGold(int gold)
+        {
+            GameManager.Instance.Gold += gold;
         }
     }
 }

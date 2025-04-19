@@ -69,7 +69,10 @@ namespace MGFramework
                 desiredFoodCount += pair.Value;
             }
 
-            Debug.Log(desiredFoodCount);
+            _data.DesiredText.text = desiredFoodCount.ToString();
+            _data.DesiredCanvas.gameObject.SetActive(true);
+
+            await UniTask.WaitForSeconds(_data.FoodConsumeSpeed);
 
             while (desiredFoodCount != 0)
             {
@@ -78,13 +81,17 @@ namespace MGFramework
                     Payload counterPayload = waitingLine.CounterPayload;
                     if (counterPayload.TryPopInputStore(pair.Key) == true)
                     {
+                        GameManager.Instance.Gold += _data.GoldPerFood;
                         desiredFoodCount--;
+
+                        _data.DesiredText.text = desiredFoodCount.ToString();
                     }
                 }
 
                 await UniTask.WaitForSeconds(_data.FoodConsumeSpeed);
             }
 
+            _data.DesiredCanvas.gameObject.SetActive(false);
             _context.StateMachine.ChangeState(new FindSeatCustomerState());
         }
     }

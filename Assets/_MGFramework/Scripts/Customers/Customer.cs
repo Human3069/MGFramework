@@ -37,6 +37,8 @@ namespace MGFramework
 
         private void OnEnable()
         {
+            data.DesiredCanvas.gameObject.SetActive(false);
+
             context.StateMachine.ChangeState(new WaitCustomerState());
             context.IsCustomerInitialized = true;
         }
