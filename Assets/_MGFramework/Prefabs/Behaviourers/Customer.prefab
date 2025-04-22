@@ -471,7 +471,7 @@ MonoBehaviour:
     IsShowLog: 0
     LookAtSpeed: 5
     FoodConsumeSpeed: 0.5
-    EatingDurationRange: {x: 10, y: 20}
+    EatingDurationRange: {x: 30, y: 40}
     GoldPerFood: 20
     RequirementDic:
       _serializedList:

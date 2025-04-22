@@ -24,6 +24,7 @@ namespace MGFramework
             consolePanelObj.gameObject.SetActive(false);
             CheatController.Instance.OnCheatConsoleStateChanged += OnCheatConsoleStateChanged;
             CheatController.Instance.OnSubmitCheatCommand += OnSubmitCheatCommand;
+            CheatController.Instance.OnNoclipStateChanged += OnNoclipStateChanged;
 
             inputField.onSubmit.AddListener(OnInputFieldSubmit);
         }
@@ -46,6 +47,14 @@ namespace MGFramework
             string currentTimeText = "<size=" + datetimeFontSize + "><color=#BFBFBF>" + " - " + currentDateTime.ToString("HH:mm:ss") + "</color></size>";
 
             logText.text += "<size=" + logFontSize + "><b>" + command + "</b></size>" + currentTimeText + "\n";
+        }
+
+        private void OnNoclipStateChanged(bool isOn)
+        {
+            DateTime currentDateTime = DateTime.Now;
+            string currentTimeText = "<size=" + datetimeFontSize + "><color=#BFBFBF>" + " - " + currentDateTime.ToString("HH:mm:ss") + "</color></size>";
+
+            logText.text += "<size=" + logFontSize + "><b>" + (isOn == true ? "Noclip On" : "Noclip Off") + "</b></size>" + currentTimeText + "\n";
         }
 
         private void OnCheatConsoleStateChanged(bool isOn)

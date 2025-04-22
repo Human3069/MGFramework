@@ -1,10 +1,12 @@
 using _KMH_Framework;
 using _KMH_Framework.Pool;
 using AYellowpaper.SerializedCollections;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace MGFramework
 {
@@ -36,11 +38,57 @@ namespace MGFramework
             }
         }
 
+        private bool _isNoclip = false;
+        private bool IsNoclip
+        {
+            get
+            {
+                return _isNoclip;
+            }
+            set
+            {
+                if (_isNoclip != value)
+                {
+                    _isNoclip = value;
+                    if (value == true)
+                    {
+                        NoclipAsync().Forget();
+                    }
+
+                    OnNoclipStateChanged?.Invoke(value);
+                }
+            }
+        }
+
+        private async UniTaskVoid NoclipAsync()
+        {
+            while (IsNoclip == true)
+            {
+                if (Input.GetMouseButtonDown(1) == true)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity) == true)
+                    {
+                        CharacterController controller = Player.Instance.GetComponent<CharacterController>();
+                        controller.enabled = false;
+
+                        Player.Instance.transform.position = hit.point;
+                        controller.enabled = true;
+                    }
+                }
+
+                await UniTask.Yield();
+            }
+        }
+
         public delegate void CheatConsoleDelegate(bool isOn);
         public event CheatConsoleDelegate OnCheatConsoleStateChanged;
 
         public delegate void SubmitCheatCommandDelegate(string command);
         public event SubmitCheatCommandDelegate OnSubmitCheatCommand;
+
+        public delegate void NoclipDelegate(bool isOn);
+        public event NoclipDelegate OnNoclipStateChanged;
 
         private void Awake()
         {
@@ -95,6 +143,7 @@ namespace MGFramework
                 int gaveAmount = int.Parse(giveGoldMatch.Groups[1].Value);
 
                 GivePlayerGold(gaveAmount);
+                OnSubmitCheatCommand?.Invoke(inputText);
                 return true;
             }
             else if (multiplesMatch.Success == true)
@@ -103,6 +152,7 @@ namespace MGFramework
                 int gaveType = int.Parse(multiplesMatch.Groups[2].Value);
                 uint gaveCount = uint.Parse(multiplesMatch.Groups[3].Value);
 
+                OnSubmitCheatCommand?.Invoke(inputText);
                 return TryIntermediator(gaveTarget, gaveType, gaveCount);
             }
             else if (singlesMatch.Success == true)
@@ -110,16 +160,24 @@ namespace MGFramework
                 string gaveTarget = singlesMatch.Groups[1].Value;
                 int gaveType = int.Parse(singlesMatch.Groups[2].Value);
 
+                OnSubmitCheatCommand?.Invoke(inputText);
                 return TryIntermediator(gaveTarget, gaveType, 1);
+            }
+            else if (inputText.Equals("noclip") == true)
+            {
+                IsNoclip = !IsNoclip;
+                return true;
             }
             else if (inputText.Equals("enqueue_customer") == true)
             {
-                EnqueueCustomer();
+                GameManager.Instance.CustomerManager.EnqueueCustomer();
+                OnSubmitCheatCommand?.Invoke(inputText);
                 return true;
             }
             else if (inputText.Equals("dequeue_customer") == true)
             {
-                DequeueCustomer();
+                RemoveCustomer();
+                OnSubmitCheatCommand?.Invoke(inputText);
                 return true;
             }
             else
@@ -195,28 +253,9 @@ namespace MGFramework
             inventory.Push(poolType);
         }
 
-        public void EnqueueCustomer()
+        public void RemoveCustomer()
         {
-            PoolType.Customer.EnablePool(OnBeforeEnablePool);
-            void OnBeforeEnablePool(GameObject customerObj)
-            {
-                Transform enableTransform = GameManager.Instance.CustomerEnablePoint;
-                customerObj.transform.position = enableTransform.position;
-                customerObj.transform.forward = enableTransform.forward;
-
-                Customer customer = customerObj.GetComponent<Customer>();
-                CustomerWaitingLine waitingLine = GameManager.Instance.WaitingLine;
-
-                if (waitingLine.TryEnqueue(customer) == false)
-                {
-                    customerObj.DisablePool(PoolType.Customer);
-                }
-            }
-        }
-
-        public void DequeueCustomer()
-        {
-            CustomerWaitingLine waitingLine = GameManager.Instance.WaitingLine;
+            CustomerWaitingLine waitingLine = GameManager.Instance.CustomerManager.WaitingLine;
             if (waitingLine.TryDequeue(out Customer customer) == true)
             {
                 customer.gameObject.DisablePool(PoolType.Customer);
@@ -225,7 +264,7 @@ namespace MGFramework
 
         public void GivePlayerGold(int gold)
         {
-            GameManager.Instance.Gold += gold;
+            GameManager.Instance.GoldManager.Add(gold);
         }
     }
 }

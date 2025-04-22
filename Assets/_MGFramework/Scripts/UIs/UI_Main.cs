@@ -16,8 +16,8 @@ namespace MGFramework
 
         private void Awake()
         {
-            goldText.text = GameManager.Instance.Gold.ToString();
-            GameManager.Instance.OnGoldChanged += OnGoldChanged;
+            goldText.text = GameManager.Instance.GoldManager.Gold.ToString();
+            GameManager.Instance.GoldManager.OnGoldChanged += OnGoldChanged;
         }
 
         private void OnGoldChanged(int gold)

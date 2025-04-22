@@ -19,6 +19,25 @@ namespace MGFramework
         private List<Vector3> pointList = new List<Vector3>();
         private List<Customer> customerList = new List<Customer>();
 
+        public delegate void CustomerEmptyDelegate();
+        public event CustomerEmptyDelegate OnCustomerEmpty;
+
+        public int Count
+        {
+            get
+            {
+                return customerList.Count;
+            }
+        }
+
+        public float CountNormal
+        {
+            get
+            {
+                return (float)customerList.Count / maxCount;
+            }
+        }
+
         /// <summary>
         /// 대기열 추가 가능 여부
         /// </summary>
@@ -103,13 +122,22 @@ namespace MGFramework
 
         private void UpdateAllCustomerPoses()
         {
-            foreach (Customer customer in customerList)
+            if (customerList.Count == 0)
             {
-                Vector3 position = pointList[customerList.IndexOf(customer)];
-                Transform segmentTransform = GetTransformBetween(position);
-                Vector3 direction = segmentTransform.forward;
+                OnCustomerEmpty?.Invoke();
+            }
+            else
+            {
+                foreach (Customer customer in customerList)
+                {
+                    int index = customerList.IndexOf(customer);
 
-                customer.UpdatePoseAsync(position, direction).Forget();
+                    Vector3 position = pointList[index];
+                    Transform segmentTransform = GetTransformBetween(position);
+                    Vector3 direction = segmentTransform.forward;
+
+                    customer.UpdatePoseAsync(position, direction).Forget();
+                }
             }
         }
 
@@ -154,7 +182,7 @@ namespace MGFramework
 
             currentCount++;
             int currentPointCount = pointList.Count;
-            while (currentCount < maxCount)
+            while (currentCount < maxCount + 1)
             {
                 Vector3 extendedPoint = startPoint + direction * interval * (currentCount - currentPointCount);
                 pointList.Add(extendedPoint);

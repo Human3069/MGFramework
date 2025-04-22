@@ -11,6 +11,12 @@ namespace MGFramework
     public class Payload : MonoBehaviour, ITimer
     {
         [SerializeField]
+        private OccupiableFootstep occupiableFootstep;
+        [SerializeField]
+        private PurchasableFootstep purchasableFootstep;
+
+        [Space(10)]
+        [SerializeField]
         private InputStackableStore[] inputStores;
         [SerializeField]
         private OutputStackableStore[] outputStores;
@@ -35,6 +41,20 @@ namespace MGFramework
             set
             {
                 _normalizedTime = value;
+            }
+        }
+
+        public bool IsCanUse
+        {
+            get
+            {
+                bool purchasableCondition = true;
+                if (purchasableFootstep != null)
+                {
+                    purchasableCondition = purchasableFootstep.HasPurchased == true;
+                }
+
+                return purchasableCondition == true;
             }
         }
 
@@ -172,6 +192,11 @@ namespace MGFramework
 
         public bool TryPopInputStore(PoolType poolType)
         {
+            if (IsCanUse == false)
+            {
+                return false;
+            }
+
             foreach (InputStackableStore store in inputStores)
             {
                 if (store.IsPoppable(poolType) == false)

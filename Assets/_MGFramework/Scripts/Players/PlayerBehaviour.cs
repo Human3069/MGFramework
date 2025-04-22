@@ -88,7 +88,9 @@ namespace MGFramework
                 if (TargetDamageable == null)
                 {
                     Vector3 middlePoint = _data.Transform.position;
-                    int overlapCount = Physics.OverlapSphereNonAlloc(middlePoint, _data.AttackRange.x, overlapCollider);
+
+                    int layerMask = ~(1 << 3);
+                    int overlapCount = Physics.OverlapSphereNonAlloc(middlePoint, _data.AttackRange.x, overlapCollider, layerMask);
                     for (int i = 0; i < overlapCount; i++)
                     {
                         Collider collider = overlapCollider[i];

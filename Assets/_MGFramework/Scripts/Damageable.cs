@@ -1,10 +1,19 @@
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace MGFramework
 {
+    public enum OwnerType
+    {
+        None = -1,
+
+        Players,
+        Enemys,
+        Neutral
+    }
+
     public class Damageable : MonoBehaviour
     {
+        private OwnerType ownerType = OwnerType.None;
         private Collider _collider;
 
         [Space(10)]
@@ -94,6 +103,41 @@ namespace MGFramework
         public Vector3 GetClosestPoint(Vector3 point)
         {
             return _collider.ClosestPoint(point);
+        }
+
+        public OwnerType GetOwnerType()
+        {
+            return ownerType;
+        }
+
+        private void Awake()
+        {
+            MonoBehaviour[] monoBehaviours = this.GetComponents<MonoBehaviour>();
+            foreach (MonoBehaviour monoBehaviour in monoBehaviours)
+            {
+                if (monoBehaviour is Player)
+                {
+                    ownerType = OwnerType.Players;
+                    break;
+                }
+                else if (monoBehaviour is Employee)
+                {
+                    ownerType = OwnerType.Players;
+                    break;
+                }
+                if (monoBehaviour is Harvestable)
+                {
+                    ownerType = OwnerType.Neutral;
+                    break;
+                }
+                else if (monoBehaviour is Monster)
+                {
+                    ownerType = OwnerType.Enemys;
+                    break;
+                }
+            }
+
+            Debug.Assert(ownerType != OwnerType.None);
         }
 
         private void Start()

@@ -1,5 +1,6 @@
 using _KMH_Framework.Pool;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MGFramework
 {
@@ -24,7 +25,19 @@ namespace MGFramework
             if (_context.TargetPayload == null)
             {
                 List<PoolType> poolTypeList = _context.Inventory.GetPoolTypeList();
-                _context.TargetPayload = _context.Transform.FindNearest<Payload>(x => x.IsEnterablePoolTypeList(poolTypeList) == true);
+                Payload foundPayload = _context.Transform.FindNearest<Payload>(FindPredicate);
+                bool FindPredicate(Payload payload)
+                {
+                    bool isEnterable = payload.IsEnterablePoolTypeList(poolTypeList);
+                    bool isActive = payload.gameObject.activeInHierarchy == true;
+                    bool isCanUse = payload.IsCanUse == true;
+
+                    return isEnterable == true &&
+                           isActive == true &&
+                           isCanUse == true;
+                }
+
+                _context.TargetPayload = foundPayload;
             }
             else
             {

@@ -15,7 +15,7 @@ namespace MGFramework
 
         public void Exit()
         {
-            CustomerWaitingLine waitingLine = GameManager.Instance.WaitingLine;
+            CustomerWaitingLine waitingLine = GameManager.Instance.CustomerManager.WaitingLine;
             waitingLine.Dequeue(out Customer customer);
 
             Debug.Assert(customer == _context.Customer);

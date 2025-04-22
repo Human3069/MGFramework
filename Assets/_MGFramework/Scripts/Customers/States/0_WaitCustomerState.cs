@@ -28,7 +28,7 @@ namespace MGFramework
                 requirementDic.Add(pair.Key, randomCount);
             }
 
-            waitingLine = GameManager.Instance.WaitingLine;
+            waitingLine = GameManager.Instance.CustomerManager.WaitingLine;
         }
 
         public void Exit()
@@ -81,7 +81,7 @@ namespace MGFramework
                     Payload counterPayload = waitingLine.CounterPayload;
                     if (counterPayload.TryPopInputStore(pair.Key) == true)
                     {
-                        GameManager.Instance.Gold += _data.GoldPerFood;
+                        GameManager.Instance.GoldManager.Add(_data.GoldPerFood);
                         desiredFoodCount--;
 
                         _data.DesiredText.text = desiredFoodCount.ToString();

@@ -58,7 +58,8 @@ namespace MGFramework
 
         private List<Item> FindItemList()
         {
-            int overlapCount = Physics.OverlapSphereNonAlloc(this.transform.position, MAGNETIC_RADIUS, overlapColliders);
+            int layerMask = ~(1 << 3);
+            int overlapCount = Physics.OverlapSphereNonAlloc(this.transform.position, MAGNETIC_RADIUS, overlapColliders, layerMask);
             List<Item> itemList = new List<Item>();
 
             for (int i = 0; i < overlapCount; i++)

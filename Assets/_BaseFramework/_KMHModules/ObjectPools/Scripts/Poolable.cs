@@ -17,6 +17,7 @@ namespace _KMH_Framework.Pool
 
         Customer = 100,
         Employee = 101,
+        Bear = 102,
 
         PlayerMarker = 200,
 

@@ -75,7 +75,7 @@ namespace MGFramework
 
             yield return group.FadeRoutine(1f, 0f, fadeDuration);
 
-            this.gameObject.DisablePool(PoolType.UI_Timer);
+            this.gameObject.DisablePool(PoolType.UI_Healthbar);
         }
     }
 }

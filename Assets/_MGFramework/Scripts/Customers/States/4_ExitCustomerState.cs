@@ -25,7 +25,7 @@ namespace MGFramework
 
         public void SlowTick()
         {
-            Vector2 targetPoint = GameManager.Instance.CustomerReturnPoint.position;
+            Vector2 targetPoint = GameManager.Instance.CustomerManager.CustomerReturnPoint.position;
             _context.Agent.destination = targetPoint;
         }
     }
