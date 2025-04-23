@@ -32,7 +32,8 @@ namespace MGFramework
         /// <returns>근처에 아이템이 없으면 false, 하나 이상 있으면 true</returns>
         private bool TryFindNearItemList(out List<Item> itemList)
         {
-            Collider[] overlapColliders = Physics.OverlapSphere(_context.Transform.position, PICKUP_DISTANCE);
+            int layerMask = ~(1 << 3);
+            Collider[] overlapColliders = Physics.OverlapSphere(_context.Transform.position, PICKUP_DISTANCE, layerMask);
             itemList = new List<Item>();
 
             foreach (Collider overlapCollider in overlapColliders)

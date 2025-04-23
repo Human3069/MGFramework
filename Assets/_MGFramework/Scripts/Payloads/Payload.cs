@@ -1,3 +1,4 @@
+using _KMH_Framework;
 using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
@@ -44,6 +45,20 @@ namespace MGFramework
             }
         }
 
+        public int GetInputCount(PoolType type)
+        {
+            int result = 0;
+            foreach (InputStackableStore store in inputStores)
+            {
+                if (store.GetPoolType() == type)
+                {
+                    result += store.TotalCount;
+                }
+            }
+
+            return result;
+        }
+
         public bool IsCanUse
         {
             get
@@ -57,6 +72,8 @@ namespace MGFramework
                 return purchasableCondition == true;
             }
         }
+
+        private UI_Timer currentProgressedTimer = null;
 
         public Vector3 GetClosestInputStorePoint(Vector3 originPoint)
         {
@@ -171,7 +188,13 @@ namespace MGFramework
             NormalizedTime = 0f;
 
             // 재료 만들 타이머 생성
-            this.EnableTimer(yOffset);
+
+            if (currentProgressedTimer != null &&
+                currentProgressedTimer.gameObject.activeInHierarchy == true)
+            {
+                currentProgressedTimer.gameObject.DisablePool(PoolType.UI_Timer);
+            }
+            currentProgressedTimer = this.EnableTimer(yOffset);
             while (time < generateSpeed)
             {
                 await UniTask.Yield();

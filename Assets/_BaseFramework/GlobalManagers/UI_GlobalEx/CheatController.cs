@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace MGFramework
 {
@@ -93,7 +92,6 @@ namespace MGFramework
         private void Awake()
         {
             playerInventory = Player.Instance.GetComponent<Inventory>();
-            employeeInventory = FindObjectOfType<Employee>().GetComponent<Inventory>();
         }
 
         private void Update()
@@ -112,17 +110,20 @@ namespace MGFramework
                 Time.timeScale = 1f;
             }
 
-            foreach (KeyValuePair<KeyCode, string> pair in bindedCommandDic)
+            if (IsOn == false)
             {
-                if (Input.GetKeyDown(pair.Key) == true)
+                foreach (KeyValuePair<KeyCode, string> pair in bindedCommandDic)
                 {
-                    if (TrySubmit(pair.Value) == true)
+                    if (Input.GetKeyDown(pair.Key) == true)
                     {
-                        break;
-                    }
-                    else
-                    {
-                        Debug.LogError("Cheat command not found : " + pair.Value);
+                        if (TrySubmit(pair.Value) == true)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Debug.LogError("Cheat command not found : " + pair.Value);
+                        }
                     }
                 }
             }

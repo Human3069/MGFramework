@@ -71,7 +71,7 @@ namespace MGFramework
         {
             if (TargetDamageable != null)
             {
-                TargetDamageable.CurrentHealth -= _data.AttackDamage;
+                TargetDamageable.TakeDamage(_data.AttackDamage, _context.Damageable);
             }
         }
 
@@ -94,9 +94,11 @@ namespace MGFramework
                     for (int i = 0; i < overlapCount; i++)
                     {
                         Collider collider = overlapCollider[i];
+
                         if (collider.TryGetComponent(out Damageable damageable) == true &&
                             damageable.transform != _data.Transform &&
-                            damageable.IsDead == false)
+                            damageable.IsDead == false &&
+                            damageable.GetOwnerType() != OwnerType.Players)
                         {
                             TargetDamageable = damageable;
                         }

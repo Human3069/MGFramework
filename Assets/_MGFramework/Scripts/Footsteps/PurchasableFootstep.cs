@@ -10,20 +10,20 @@ namespace MGFramework
     {
         [Header("=== PurchasableFootstep ===")]
         [SerializeField]
-        private TextMeshProUGUI priceText;
+        protected TextMeshProUGUI priceText;
 
         [SerializeField]
-        private int price = 0;
+        protected int price = 0;
         [SerializeField]
-        private int goldPerTick = 1;
+        protected int goldPerTick = 1;
 
         [Space(10)]
         [ReadOnly]
         [SerializeField]
-        private int purchasedPrice = 0;
+        protected int purchasedPrice = 0;
 
         [SerializeField]
-        private UnityEvent onPurchasedEvent;
+        protected UnityEvent onPurchasedEvent;
 
         [SerializeField]
         private bool _hasPurchased = false;
@@ -57,7 +57,7 @@ namespace MGFramework
             {
                 GoldManagement goldManager = GameManager.Instance.GoldManager;
 
-                while (IsOccupied == true || purchasedPrice != price)
+                while (IsOccupied == true)
                 {
                     await UniTask.Yield(cancellationToken: token);
 
@@ -68,12 +68,17 @@ namespace MGFramework
 
                         progressImage.fillAmount = purchasedNormal;
                         priceText.text = (price - purchasedPrice).ToString();
+
+                        if (purchasedPrice == price)
+                        {
+                            HasPurchased = true;
+                            onPurchasedEvent?.Invoke();
+                            this.gameObject.SetActive(false);
+
+                            break;
+                        }
                     }
                 }
-
-                HasPurchased = true;
-                onPurchasedEvent?.Invoke();
-                this.gameObject.SetActive(false);
             }
         }
     }

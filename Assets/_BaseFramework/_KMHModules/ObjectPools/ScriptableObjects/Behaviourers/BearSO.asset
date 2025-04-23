@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BearSO
   m_EditorClassIdentifier: 
   poolable:
-    type: 102
+    type: 103
     prefab: {fileID: 5496684806208653397, guid: d740398855e2a9f4f84e141e306e0a0f,
       type: 3}
     initCount: 30

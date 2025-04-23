@@ -20,7 +20,7 @@ namespace MGFramework
 
         private async UniTaskVoid EnterAsync()
         {
-            while (isEnter == true)
+            while (isEnter == true && _context.TargetDamageable.IsDead == false)
             {
                 _context.AnimationController.PlayAttack();
 
@@ -43,6 +43,11 @@ namespace MGFramework
             if (_context.IsInAttackRange(_data) == false)
             {
                 _context.StateMachine.ChangeState(new MoveToAttackMonsterState());
+            }
+            else if (_context.TargetDamageable.IsDead == true)
+            {
+                _context.TargetDamageable = null;
+                _context.StateMachine.ChangeState(new IdleMonsterState());
             }
         }
     }

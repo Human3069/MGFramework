@@ -27,7 +27,13 @@ namespace MGFramework
 
         public void SlowTick()
         {
-            if (_context.IsInMoveToAttackRange(_data) == true)
+            if (_context.TargetDamageable != null &&
+                _context.TargetDamageable.IsDead == true)
+            {
+                _context.TargetDamageable = null;
+                _context.StateMachine.ChangeState(new IdleMonsterState());
+            }
+            else if (_context.IsInMoveToAttackRange(_data) == true)
             {
                 _context.StateMachine.ChangeState(new MoveToAttackMonsterState());
             }

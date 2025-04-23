@@ -33,6 +33,14 @@ namespace MGFramework
         [SerializeField]
         protected List<Stackable> stackableList = new List<Stackable>();
 
+        public int TotalCount
+        {
+            get
+            {
+                return stackableList.Count;
+            }
+        }
+
         private List<Inventory> enteringInventoryList = new List<Inventory>();
         private Inventory _enteredInventory;
         protected Inventory EnteredInventory

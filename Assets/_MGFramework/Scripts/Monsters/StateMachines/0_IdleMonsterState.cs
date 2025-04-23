@@ -40,6 +40,7 @@ namespace MGFramework
                     Collider overlapCollider = overlapColliders[i];
 
                     if (overlapCollider.TryGetComponent(out Damageable damageable) == true &&
+                        damageable.IsDead == false &&
                         damageable.transform != _context.Transform &&
                         damageable.GetOwnerType() == OwnerType.Players &&
                         _context.IsInAlertRange(_data, damageable.transform.position) == true)

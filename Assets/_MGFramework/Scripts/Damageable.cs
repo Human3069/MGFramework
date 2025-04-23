@@ -29,7 +29,7 @@ namespace MGFramework
             {
                 return _currentHealth;
             }
-            set
+            private set
             {
                 if (_currentHealth > value)
                 {
@@ -48,6 +48,12 @@ namespace MGFramework
                     _currentHealth = Mathf.Clamp(value, 0f, maxHealth);
                 }
             }
+        }
+
+        public void TakeDamage(float damage, Damageable attackerDamageable)
+        {
+            CurrentHealth -= damage;
+            OnDamagedWithDataEvent?.Invoke(attackerDamageable);
         }
 
         public float CurrentNormal
@@ -83,6 +89,9 @@ namespace MGFramework
         public delegate void DamagedDelegate();
         public event DamagedDelegate OnDamagedEvent;
 
+        public delegate void DamagedWithDataDelegate(Damageable attackerDamageable);
+        public event DamagedWithDataDelegate OnDamagedWithDataEvent;
+
         public delegate void DeadDelegate();
         public event DeadDelegate OnDeadEvent;
 
@@ -115,12 +124,9 @@ namespace MGFramework
             MonoBehaviour[] monoBehaviours = this.GetComponents<MonoBehaviour>();
             foreach (MonoBehaviour monoBehaviour in monoBehaviours)
             {
-                if (monoBehaviour is Player)
-                {
-                    ownerType = OwnerType.Players;
-                    break;
-                }
-                else if (monoBehaviour is Employee)
+                if (monoBehaviour is Player or
+                                     Employee or
+                                     Hunter)
                 {
                     ownerType = OwnerType.Players;
                     break;

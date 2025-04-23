@@ -24,16 +24,21 @@ namespace MGFramework
 {
     public static class PoolableUtility
     {
-        public static void EnableTimer(this ITimer timer, float yOffset)
+        public static UI_Timer EnableTimer(this ITimer timer, float yOffset)
         {
+            UI_Timer _timer = null;
             PoolableManager.Instance.EnablePool(PoolType.UI_Timer, onBeforeEnableAction);
+            
             void onBeforeEnableAction(GameObject timerObj)
             {
                 UI_Timer uiTimer = timerObj.GetComponent<UI_Timer>();
                 uiTimer.Initialize(timer, yOffset);
-
                 timerObj.transform.SetParent(UI_Main.Instance.TimerParent);
+
+                _timer = uiTimer;
             }
+
+            return _timer;
         }
 
         public static void EnableHealthbar(this Damageable damageable, float yOffset)

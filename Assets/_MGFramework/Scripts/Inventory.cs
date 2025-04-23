@@ -116,6 +116,18 @@ namespace MGFramework
             return stackable != null;
         }
 
+        public void Clear()
+        {
+            for (int i = stackableList.Count - 1; i >= 0; i--)
+            {
+                Stackable stackable = stackableList[i];
+                stackable.gameObject.DisablePool(stackable.StackablePoolType);
+                stackableList.RemoveAt(i);
+            }
+
+            ReformPosition();
+        }
+
         /// <summary>
         /// 아이템 재정렬
         /// </summary>

@@ -1,3 +1,4 @@
+using UnityEngine;
 
 namespace MGFramework
 {
@@ -6,6 +7,8 @@ namespace MGFramework
     {
         public float AttackDamage;
         public float AttackRange;
+
+        [Space(10)]
         public bool IsShowLog;
     }
 }

@@ -39,7 +39,7 @@ namespace MGFramework
         {
             if (context.TargetHarvestable != null)
             {
-                context.TargetHarvestable._Damageable.CurrentHealth -= data.AttackDamage;
+                context.TargetHarvestable._Damageable.TakeDamage(data.AttackDamage, null);
             }
         }
 

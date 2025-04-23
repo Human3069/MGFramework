@@ -76,7 +76,7 @@ namespace MGFramework
         {
             if (context.TargetDamageable != null)
             {
-                context.TargetDamageable.CurrentHealth -= data.AttackDamage;
+                context.TargetDamageable.TakeDamage(data.AttackDamage, damageable);
             }
         }
 
