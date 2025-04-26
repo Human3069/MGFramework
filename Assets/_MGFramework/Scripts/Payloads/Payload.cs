@@ -3,6 +3,7 @@ using _KMH_Framework.Pool;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace MGFramework
 {
@@ -31,6 +32,9 @@ namespace MGFramework
         private float yOffset = 0f;
 
         private bool isGeneratingOutput = false;
+
+        [SerializeField]
+        private UnityEvent<bool> onProgressEvent;
 
         protected float _normalizedTime = 0f;
         public float NormalizedTime
@@ -163,6 +167,8 @@ namespace MGFramework
             {
                 inputStore.OnPush += OnPush;
             }
+
+            onProgressEvent.Invoke(false);
         }
 
         private void OnPush()
@@ -183,6 +189,7 @@ namespace MGFramework
         private async UniTaskVoid GenerateOutputAsync()
         {
             isGeneratingOutput = true;
+            onProgressEvent.Invoke(true);
 
             float time = 0f;
             NormalizedTime = 0f;
@@ -205,6 +212,7 @@ namespace MGFramework
 
             NormalizedTime = 1f;
             isGeneratingOutput = false;
+            onProgressEvent.Invoke(false);
 
             // Output »ý¼º
             AddEachOutputStore();

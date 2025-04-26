@@ -1,4 +1,5 @@
 using _KMH_Framework;
+using _KMH_Framework.Pool;
 using UnityEngine;
 
 namespace MGFramework
@@ -39,8 +40,14 @@ namespace MGFramework
             receiver = this.GetComponentInChildren<KeyframeReceiver>();
             receiver.OnKeyframeReachedEvent += OnKeyframeReachedEvent;
 
+            context.OwnerDamageable.OnAlivedEvent += OnAlived;
             context.OwnerDamageable.OnDamagedWithDataEvent += OnDamaged;
             context.OwnerDamageable.OnDeadEvent += OnDead;
+        }
+
+        private void OnAlived()
+        {
+            context.Inventory.enabled = true;
         }
 
         private void OnDamaged(Damageable attackerDamageable)
@@ -48,7 +55,12 @@ namespace MGFramework
             if (context.OwnerDamageable.IsDead == false)
             {
                 context.TargetDamageable = attackerDamageable;
-                context.StateMachine.ChangeState(new MoveToHuntHunterState());
+
+                IHunterState currentState = context.StateMachine.GetState();
+                if (currentState is not HuntHunterState)
+                {
+                    context.StateMachine.ChangeState(new MoveToHuntHunterState());
+                }
             }
         }
 
@@ -56,8 +68,13 @@ namespace MGFramework
         {
             context.StateMachine.ChangeState(null);
             context.AnimationController.PlayDead();
+            context.Inventory.enabled = false;
 
-            context.Inventory.Clear();
+            while (context.Inventory.TryPop(out Stackable stackable) == true)
+            {
+                PoolType itemPoolType = stackable.StackablePoolType.ToItemType();
+                itemPoolType.EnablePool(obj => obj.transform.position = stackable.transform.position);
+            }
         }
 
         private void OnKeyframeReachedEvent(int index)
@@ -74,6 +91,11 @@ namespace MGFramework
         private void OnEnable()
         {
             context.StateMachine.ChangeState(new FindHuntHunterState());
+
+            if (context.OwnerDamageable.IsDead == true)
+            {
+                context.OwnerDamageable.Alive();
+            }
         }
 
         private void FixedUpdate()

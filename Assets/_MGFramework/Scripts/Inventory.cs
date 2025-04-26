@@ -116,6 +116,18 @@ namespace MGFramework
             return stackable != null;
         }
 
+        public bool TryPop(out Stackable stackable)
+        {
+            stackable = stackableList.FindLast(x => x.StackablePoolType != PoolType.None);
+            if (stackable != null)
+            {
+                stackableList.Remove(stackable);
+            }
+
+            ReformPosition();
+            return stackable != null;
+        }
+
         public void Clear()
         {
             for (int i = stackableList.Count - 1; i >= 0; i--)

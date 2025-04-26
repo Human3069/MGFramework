@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +15,28 @@ namespace MGFramework
             this._context = context;
             this._data = data;
 
-            this._context.AnimationController.PlayWorking(true);
+            // 추가 움직임을 방지하기 위해 이동을 멈춘다.
+            this._context.Agent.destination = _context.Transform.position;
+
+            EnterAsync().Forget();
+        }
+
+        private async UniTask EnterAsync()
+        {
+            while (_context.TargetHarvestable != null)
+            {
+                if (_context.TargetHarvestable != null &&
+                    _context.TargetHarvestable._Damageable.IsDead == false)
+                {
+                    this._context.AnimationController.PlayWorking();
+                }
+
+                await UniTask.WaitForSeconds(_data.AttackSpeed);
+            }
         }
 
         public void Exit()
         {
-            this._context.AnimationController.PlayWorking(false);
             this._context.TargetHarvestable = null;
         }
 

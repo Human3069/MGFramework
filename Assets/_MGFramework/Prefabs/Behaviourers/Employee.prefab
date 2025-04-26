@@ -82,6 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     AttackDamage: 10
+    AttackSpeed: 2
     AttackRange: 1
     IsShowLog: 1
 --- !u!114 &1956189870952697197
@@ -109,7 +110,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

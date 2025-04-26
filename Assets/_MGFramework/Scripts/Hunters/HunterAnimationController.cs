@@ -25,7 +25,7 @@ namespace MGFramework
             _animator.SetTrigger("IsMovingStateChanged");
         }
 
-        public void PlayHunting(bool isHunt)
+        public void PlayHunting()
         {
             int randomized = Random.Range(0, HUNTING_CLIP_COUNT + 1);
             _animator.SetInteger("HuntingIndex", randomized);

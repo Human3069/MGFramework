@@ -19,6 +19,7 @@ namespace MGFramework
 
         private Inventory playerInventory;
         private Inventory employeeInventory;
+        private Inventory hunterInventory;
 
         private bool _isOn = false;
         public bool IsOn
@@ -203,7 +204,21 @@ namespace MGFramework
             }
             else if (gaveTarget.Equals("employee") == true)
             {
+                if (employeeInventory == null)
+                {
+                    employeeInventory = FindObjectOfType<Inventory>(false);
+                }
+
                 gaveInventory = employeeInventory;
+            }
+            else if (gaveTarget.Equals("hunter") == true)
+            {
+                if (hunterInventory == null)
+                {
+                    hunterInventory = FindObjectOfType<Inventory>(false);
+                }
+
+                gaveInventory = hunterInventory;
             }
             else
             {

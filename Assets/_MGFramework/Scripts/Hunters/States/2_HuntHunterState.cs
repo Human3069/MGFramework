@@ -7,22 +7,23 @@ namespace MGFramework
         private HunterContext _context;
         private HunterData _data;
         
-        private bool isEntered = false;
-
         public void Enter(HunterContext context, HunterData data)
         {
             this._context = context;
             this._data = data;
 
-            isEntered = true;
             EnterAsync().Forget();
         }
 
         private async UniTaskVoid EnterAsync()
         {
-            while (isEntered == true)
+            while (_context.TargetDamageable != null)
             {
-                this._context.AnimationController.PlayHunting(true);
+                if (_context.TargetDamageable != null &&
+                    _context.TargetDamageable.IsDead == false)
+                {
+                    _context.AnimationController.PlayHunting();
+                }
 
                 await UniTask.WaitForSeconds(_data.AttackSpeed);
             }
@@ -30,8 +31,7 @@ namespace MGFramework
 
         public void Exit()
         {
-            isEntered = false;
-            this._context.AnimationController.PlayHunting(false);
+    
         }
 
         public void FixedTick()

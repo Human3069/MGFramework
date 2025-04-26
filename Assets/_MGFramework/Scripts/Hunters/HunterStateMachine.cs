@@ -22,7 +22,12 @@ namespace MGFramework
             this._context = context;
             this._data = data;
         }
-        
+
+        public IHunterState GetState()
+        {
+            return currentState;
+        }
+
         public void ChangeState(IHunterState newState)
         {
             IHunterState oldState = currentState;

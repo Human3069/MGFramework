@@ -6,6 +6,7 @@ namespace MGFramework
     public class EmployeeData 
     {
         public float AttackDamage;
+        public float AttackSpeed;
         public float AttackRange;
 
         [Space(10)]

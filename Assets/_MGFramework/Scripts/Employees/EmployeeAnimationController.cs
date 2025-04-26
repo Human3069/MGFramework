@@ -11,10 +11,9 @@ namespace MGFramework
             this._animator = animator;
         }
 
-        public void PlayWorking(bool isWork)
+        public void PlayWorking()
         {
-            _animator.SetBool("IsStartMining", isWork);
-            _animator.SetTrigger("IsStartMiningStateChanged");
+            _animator.SetTrigger("IsMining");
         }
 
         public void PlayMove(bool isMove)
