@@ -7,6 +7,16 @@ namespace MGFramework
 {
     public class UpgradeController : MonoBehaviour
     {
+        private const float CURVE_STEEPNESS = 0.25f; // Sigmoid curve steepness
+
+        [ReadOnly]
+        [SerializeField]
+        private List<CostExcelRow> costRowList;
+
+        [Space(10)]
+        [ReadOnly]
+        [SerializeField]
+        private List<PlayerExcelRow> playerRowList;
         [ReadOnly]
         [SerializeField]
         private List<EmployeeExcelRow> employeeRowList;
@@ -16,21 +26,20 @@ namespace MGFramework
 
         private void Awake()
         {
+            costRowList = ExcelReadHandler.Instance.GetSheet<CostExcelRow>();
+
+            playerRowList = ExcelReadHandler.Instance.GetSheet<PlayerExcelRow>();
             employeeRowList = ExcelReadHandler.Instance.GetSheet<EmployeeExcelRow>();
             hunterRowList = ExcelReadHandler.Instance.GetSheet<HunterExcelRow>();
         }
 
-        [SerializeField]
-        private float curveSteepness = 0.25f; // Sigmoid curve steepness
-        [ReadOnly]
-        [SerializeField]
         private float index = 0f;
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                float sigmoidValue = Sigmoid(index, curveSteepness);
+                float sigmoidValue = Sigmoid(index);
                 Debug.Log("Sigmoid Value: " + sigmoidValue);
 
                 index++;
@@ -42,9 +51,9 @@ namespace MGFramework
             }
         }
 
-        private float Sigmoid(float x, float k = 1f)
+        private float Sigmoid(float x)
         {
-            return (2f / (1f + Mathf.Exp(-k * x))) - 1f;
+            return (2f / (1f + Mathf.Exp(-CURVE_STEEPNESS * x))) - 1f;
         }
     }
 }
