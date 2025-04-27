@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 
 namespace MGFramework
@@ -10,18 +12,37 @@ namespace MGFramework
         private float currentNormal = 0f;
         private bool isInput = false;
 
+        private CancellationTokenSource tokenSource;
+
         public PlayerAnimator(PlayerContext context, PlayerData data)
         {
             this._context = context;
             this._data = data;
 
             this._context.Behaviour.OnTargetChanged += OnTargetChanged;
+            tokenSource = new CancellationTokenSource();
         }
 
         private void OnTargetChanged(Damageable damageable)
         {
-            _context.Anime.SetBool("IsAttack", damageable != null);
-            _context.Anime.SetTrigger("IsAttackStateChanged");
+            if (damageable == null)
+            {
+                tokenSource.Cancel();
+                tokenSource = new CancellationTokenSource();
+            }
+            else
+            {
+                OnTargetChangedAsync(tokenSource.Token).Forget();
+            }
+        }
+
+        private async UniTaskVoid OnTargetChangedAsync(CancellationToken token)
+        {
+            while (token.IsCancellationRequested == false)
+            {
+                _context.Anime.SetTrigger("IsAttack");
+                await UniTask.WaitForSeconds(_data.AttackSpeed, cancellationToken: token);
+            }
         }
 
         public void Tick()

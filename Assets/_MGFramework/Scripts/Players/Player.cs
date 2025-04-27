@@ -11,6 +11,30 @@ namespace MGFramework
         private PlayerData data;
         private PlayerContext context;
 
+        public void Upgrade(float value, UpgradeType type)
+        {
+            if (type == UpgradeType.Health)
+            {
+                context.Damageable.UpdateMaxHealth(value);
+            }
+            else if (type == UpgradeType.MoveSpeed)
+            {
+                data.MoveSpeed = value;
+            }
+            else if (type == UpgradeType.AttackSpeed)
+            {
+                data.AttackSpeed = value;
+            }
+            else if (type == UpgradeType.AttackDamage)
+            {
+                data.AttackDamage = value;
+            }
+            else
+            {
+                throw new System.NotImplementedException("type : " + type);
+            }
+        }
+
         private void Awake()
         {
             context = new PlayerContext(data);

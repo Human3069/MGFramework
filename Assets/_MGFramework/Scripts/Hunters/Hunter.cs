@@ -31,6 +31,13 @@ namespace MGFramework
             }
         }
 
+        public void Upgrade(HunterExcelRow row)
+        {
+            context.OwnerDamageable.UpdateMaxHealth(row.Health);
+            context.Agent.speed = row.MovementSpeed;
+            data.UpdateData(row);
+        }
+
         private void Awake()
         {
             context = new HunterContext(this);

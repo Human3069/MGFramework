@@ -26,6 +26,12 @@ namespace MGFramework
             }
         }
 
+        public void Upgrade(EmployeeExcelRow row)
+        {
+            context.Agent.speed = row.MovementSpeed;
+            data.UpdateData(row);
+        }
+
         private void Awake()
         {
             context = new EmployeeContext(this);

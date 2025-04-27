@@ -19,6 +19,7 @@ namespace MGFramework
         [MinMaxSlider(0f, 2f)]
         public Vector2 AttackRange = new Vector2(1f, 1.25f); //min => start attack, max => attackable range
         public float AttackDamage = 30f;
+        public float AttackSpeed = 1f;
 
         [Header("Animator Value Datas")]
         public float NormalLerpPower = 5f;

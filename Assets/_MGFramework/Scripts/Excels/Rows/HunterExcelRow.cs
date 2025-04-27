@@ -11,6 +11,11 @@ namespace MGFramework
         public float AttackSpeed;
         public float AttackDamage;
 
+        public string GetName()
+        {
+            return Name;
+        }
+
         public void Validate()
         {
             this.Name = Name.Trim().Replace(" ", "").ToLower();

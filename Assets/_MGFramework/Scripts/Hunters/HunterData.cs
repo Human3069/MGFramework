@@ -16,6 +16,12 @@ namespace MGFramework
 #if UNITY_EDITOR
         [Space(10)]
         public bool IsShowLog = true;
-        #endif
+#endif
+
+        public void UpdateData(HunterExcelRow row)
+        {
+            AttackDamage = row.AttackDamage;
+            AttackSpeed = row.AttackSpeed;
+        }
     }
 }

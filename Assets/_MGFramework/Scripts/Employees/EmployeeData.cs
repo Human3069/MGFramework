@@ -11,5 +11,11 @@ namespace MGFramework
 
         [Space(10)]
         public bool IsShowLog;
+
+        public void UpdateData(EmployeeExcelRow row)
+        {
+            AttackDamage = row.AttackDamage;
+            AttackSpeed = row.AttackSpeed;
+        }
     }
 }

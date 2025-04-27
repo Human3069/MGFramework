@@ -56,6 +56,12 @@ namespace MGFramework
             OnDamagedWithDataEvent?.Invoke(attackerDamageable);
         }
 
+        public void UpdateMaxHealth(float health)
+        {
+            maxHealth = health;
+            CurrentHealth = health;
+        }
+
         public float CurrentNormal
         {
             get
